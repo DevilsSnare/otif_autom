@@ -1,0 +1,41 @@
+2025-06-30 19:52:47,895 - INFO - Output folders created: ['outputs/tat_results', 'outputs/delay_results', 'outputs/excel_exports', 'outputs/csv_files', 'outputs/logs']
+2025-06-30 19:52:47,895 - INFO - Setting up TAT calculation environment...
+2025-06-30 19:52:47,896 - INFO - Loading Excel file: ts_big.xlsx
+2025-06-30 19:52:47,897 - ERROR - Error loading Excel file: [Errno 2] No such file or directory: 'ts_big.xlsx'
+2025-06-30 19:52:47,897 - ERROR - Error in main execution: [Errno 2] No such file or directory: 'ts_big.xlsx'
+2025-06-30 20:25:33,587 - INFO - Output folders created: ['outputs/tat_results', 'outputs/delay_results', 'outputs/excel_exports', 'outputs/csv_files', 'outputs/logs']
+2025-06-30 20:25:33,613 - INFO - Setting up TAT calculation environment...
+2025-06-30 20:25:33,613 - INFO - Using provided dataframe
+2025-06-30 20:25:33,624 - INFO - Converted po_created_date: object -> datetime, 0/5315 missing (0.0%)
+2025-06-30 20:25:33,631 - INFO - Converted po_approval_date: object -> datetime, 12/5315 missing (0.2%)
+2025-06-30 20:25:33,636 - INFO - Converted supplier_confirmation_date: object -> datetime, 423/5315 missing (8.0%)
+2025-06-30 20:25:33,642 - INFO - Converted pi_invoice_approval_date: object -> datetime, 1802/5315 missing (33.9%)
+2025-06-30 20:25:33,646 - INFO - Converted pi_payment_date: object -> datetime, 1801/5315 missing (33.9%)
+2025-06-30 20:25:33,651 - INFO - Converted receive_first_prd_date: object -> datetime, 1275/5315 missing (24.0%)
+2025-06-30 20:25:33,654 - INFO - Converted prd_reconfirmed_date: object -> datetime, 2340/5315 missing (44.0%)
+2025-06-30 20:25:33,658 - INFO - Converted po_im_date_value: object -> datetime, 1860/5315 missing (35.0%)
+2025-06-30 20:25:33,662 - INFO - Converted po_sm_date_value: object -> datetime, 1960/5315 missing (36.9%)
+2025-06-30 20:25:33,666 - INFO - Converted batch_created_ts: datetime64[ns, UTC] -> datetime, 2436/5315 missing (45.8%)
+2025-06-30 20:25:33,672 - INFO - Converted sm_signoff_ts: datetime64[ns, UTC] -> datetime, 2531/5315 missing (47.6%)
+2025-06-30 20:25:33,674 - INFO - Converted ci_invoice_approval_date: object -> datetime, 4528/5315 missing (85.2%)
+2025-06-30 20:25:33,676 - INFO - Converted ci_payment_date: object -> datetime, 4552/5315 missing (85.6%)
+2025-06-30 20:25:33,679 - INFO - Converted qc_schedule_date: object -> datetime, 3544/5315 missing (66.7%)
+2025-06-30 20:25:33,683 - INFO - Converted ffw_booking_ts: datetime64[ns, UTC] -> datetime, 2536/5315 missing (47.7%)
+2025-06-30 20:25:33,688 - INFO - Converted spd_ts: datetime64[ns, UTC] -> datetime, 2837/5315 missing (53.4%)
+2025-06-30 20:25:33,690 - INFO - Converted stock_pickup_date: object -> datetime, 3474/5315 missing (65.4%)
+2025-06-30 20:25:33,693 - INFO - Converted shipment_creation_date: object -> datetime, 3627/5315 missing (68.2%)
+2025-06-30 20:25:33,695 - INFO - Converted shipment_in_transit_date: object -> datetime, 3906/5315 missing (73.5%)
+2025-06-30 20:25:33,697 - INFO - Converted bi_invoice_approval_date: object -> datetime, 4192/5315 missing (78.9%)
+2025-06-30 20:25:33,701 - INFO - Converted bi_payment_date: object -> datetime, 4609/5315 missing (86.7%)
+2025-06-30 20:25:33,764 - INFO - Converted ffwp_telex_release_date: object -> datetime, 4974/5315 missing (93.6%)
+2025-06-30 20:25:33,794 - INFO - Converted shipment_stock_delivery_date: object -> datetime, 5165/5315 missing (97.2%)
+2025-06-30 20:25:33,796 - INFO - Converted item_receipt_date: object -> datetime, 5235/5315 missing (98.5%)
+2025-06-30 20:25:33,804 - INFO - Converted actual_cargo_pick_up_date: object -> datetime, 3688/5315 missing (69.4%)
+2025-06-30 20:25:33,808 - INFO - Converted actual_shipping_date: object -> datetime, 3743/5315 missing (70.4%)
+2025-06-30 20:25:33,810 - INFO - Converted actual_arrival_date: object -> datetime, 4733/5315 missing (89.0%)
+2025-06-30 20:25:33,813 - INFO - Converted actual_delivery_date: object -> datetime, 5156/5315 missing (97.0%)
+2025-06-30 20:25:33,813 - INFO - All required columns present
+2025-06-30 20:25:33,813 - INFO - Initializing TAT Calculator with config: stages_config.json
+2025-06-30 20:25:33,814 - WARNING - New modular TATCalculator not available, trying old version...
+2025-06-30 20:25:33,814 - ERROR - No TATCalculator available. Please ensure tat_calculator_main.py or tat_calculator.py is in the same directory.
+2025-06-30 20:25:33,822 - ERROR - Error in main execution: No module named 'tat_calculator'
