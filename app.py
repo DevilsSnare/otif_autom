@@ -45,11 +45,12 @@ for step in tqdm(steps, desc="Overall Progress", unit="step"):
         final_df = cal_main(dfs_tables, dfs_excels)
         continue
     elif step == "Calculate DoD view":
-        # final_df = pd.DataFrame()
-        final_df = dod_main(final_df, dfs_tables['dod_data'])
-        with open(os.devnull, 'w') as fnull:
-            with redirect_stdout(fnull):
-                final_df = dod_main(final_df, dfs_tables['dod_data'])
+        ## final_df = pd.DataFrame()
+        # final_df = dod_main(final_df, dfs_tables['dod_data'])
+        # with open(os.devnull, 'w') as fnull:
+        #     with redirect_stdout(fnull):
+        #         final_df = dod_main(final_df, dfs_tables['dod_data'])
+        continue
     elif step == "Upload to SharePoint":
         root_url = "https://razrgroup.sharepoint.com/sites/Razor"
         library_path = "/sites/Razor/Shared%20Documents/Chetan_Locale/OTIF/Export"
