@@ -67,14 +67,6 @@ def main(creds):
     root_url = "https://razrgroup.sharepoint.com/teams/logistics-group"
     relative_url = "/teams/logistics-group/Freigegebene%20Dokumente/Freight%20Operations/"
 
-    
-    
-    # telex_ffw = fetch_from_sharepoint_excel_large_files(root_url, relative_url, "FFW Reporting.xlsx", "INBSHIP Level")
-    # telex_ffw = telex_ffw[["Shipment Number", "Telex Released/Not Released", "Standard Remarks"]]
-    # telex_ffw = telex_ffw[telex_ffw["Shipment Number"].notna() & (telex_ffw["Shipment Number"] != "")]
-    # telex_ffw['Final Status'] = telex_ffw['Telex Released/Not Released'].str.strip()
-    # telex_ffw['Final Blocker Status'] = telex_ffw['Standard Remarks'].apply(lambda x: "No FFW Telex Blocker Mentioned" if x == "" else x)
-
     for attempt in range(3):
         try:
             telex_ffw = fetch_from_sharepoint_excel_large_files(root_url, relative_url, "FFW Reporting.xlsx", "INBSHIP Level")
@@ -115,22 +107,6 @@ def main(creds):
     fob_date["Final Date"] = fob_date["CFS/CY Cut off"].combine_first(fob_date["Expected Date at CFS/CY"])
     fob_date["Pickup Status"] = fob_date["BATCH ID"].apply(lambda x: "Not Picked" if pd.notna(x) and x != "" else "Picked")
 
-    ## Payrun
-    payrun = fetch_from_sharepoint(root_url, relative_url, "Approved_Invoice_Master_Tracker.xlsx", "Current_Week_Payrun")
-    payrun = payrun[["Invoice No.", "PO No.", "Final_Verdict"]]
-    payrun = payrun[payrun["Invoice No."].notna() & (payrun["Invoice No."] != "")]
-    payrun['Inv#'] = "Bill #" + payrun["Invoice No."].astype(str)
-    payrun['Status'] = payrun["Final_Verdict"].str.strip()
-
-    ## Compliance L2 Status
-    compliance = fetch_from_sharepoint(root_url, relative_url, "Compliance L2 Status.xlsx", "Compliance")
-    compliance = compliance[["PO&RAZIN&ID", "Blocker Status", "Comments", "SM Resolved"]]
-    compliance = compliance[compliance["PO&RAZIN&ID"].notna() & (compliance["PO&RAZIN&ID"] != "")]
-    compliance["Final Status"] = compliance.apply(
-        lambda row: "Compliance Blocker Resolved" if (row["SM Resolved"] == "Yes")
-        else ("No Compliance Blocker Mentioned" if row["Blocker Status"] != "" else row["Blocker Status"]),
-        axis=1
-    )
 
     ## -------------------------------------------------------------------------------------------------------------------- ##
 
@@ -178,6 +154,23 @@ def main(creds):
     qc = qc[["PO RAZIN ID", "QC Status Category"]]
     qc = qc[qc["PO RAZIN ID"].notna() & (qc["PO RAZIN ID"] != "")]
     qc['Final Status2'] = qc['QC Status Category'].apply(lambda x: "No QC Blocker Mentioned" if x=="" else x)
+
+    ## Payrun
+    payrun = fetch_from_sharepoint(root_url, relative_url, "Approved_Invoice_Master_Tracker.xlsx", "Current_Week_Payrun")
+    payrun = payrun[["Invoice No.", "PO No.", "Final_Verdict"]]
+    payrun = payrun[payrun["Invoice No."].notna() & (payrun["Invoice No."] != "")]
+    payrun['Inv#'] = "Bill #" + payrun["Invoice No."].astype(str)
+    payrun['Status'] = payrun["Final_Verdict"].str.strip()
+
+    ## Compliance L2 Status
+    compliance = fetch_from_sharepoint(root_url, relative_url, "Compliance L2 Status.xlsx", "Compliance")
+    compliance = compliance[["PO&RAZIN&ID", "Blocker Status", "Comments", "SM Resolved"]]
+    compliance = compliance[compliance["PO&RAZIN&ID"].notna() & (compliance["PO&RAZIN&ID"] != "")]
+    compliance["Final Status"] = compliance.apply(
+        lambda row: "Compliance Blocker Resolved" if (row["SM Resolved"] == "Yes")
+        else ("No Compliance Blocker Mentioned" if row["Blocker Status"] != "" else row["Blocker Status"]),
+        axis=1
+    )
 
     ## -------------------------------------------------------------------------------------------------------------------- ##
 

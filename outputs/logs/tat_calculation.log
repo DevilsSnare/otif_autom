@@ -39,3 +39,451 @@
 2025-06-30 20:25:33,814 - WARNING - New modular TATCalculator not available, trying old version...
 2025-06-30 20:25:33,814 - ERROR - No TATCalculator available. Please ensure tat_calculator_main.py or tat_calculator.py is in the same directory.
 2025-06-30 20:25:33,822 - ERROR - Error in main execution: No module named 'tat_calculator'
+2025-07-01 14:58:09,226 - INFO - Output folders created: ['outputs/tat_results', 'outputs/delay_results', 'outputs/excel_exports', 'outputs/csv_files', 'outputs/logs']
+2025-07-01 14:58:09,232 - INFO - Setting up TAT calculation environment...
+2025-07-01 14:58:09,232 - INFO - Using provided dataframe
+2025-07-01 14:58:09,242 - INFO - Converted po_created_date: object -> datetime, 0/5279 missing (0.0%)
+2025-07-01 14:58:09,248 - INFO - Converted po_approval_date: object -> datetime, 10/5279 missing (0.2%)
+2025-07-01 14:58:09,255 - INFO - Converted supplier_confirmation_date: object -> datetime, 403/5279 missing (7.6%)
+2025-07-01 14:58:09,268 - INFO - Converted pi_invoice_approval_date: object -> datetime, 1786/5279 missing (33.8%)
+2025-07-01 14:58:09,271 - INFO - Converted pi_payment_date: object -> datetime, 1787/5279 missing (33.9%)
+2025-07-01 14:58:09,278 - INFO - Converted receive_first_prd_date: object -> datetime, 1271/5279 missing (24.1%)
+2025-07-01 14:58:09,285 - INFO - Converted prd_reconfirmed_date: object -> datetime, 2337/5279 missing (44.3%)
+2025-07-01 14:58:09,291 - INFO - Converted po_im_date_value: object -> datetime, 1858/5279 missing (35.2%)
+2025-07-01 14:58:09,301 - INFO - Converted po_sm_date_value: object -> datetime, 1959/5279 missing (37.1%)
+2025-07-01 14:58:09,306 - INFO - Converted batch_created_ts: datetime64[ns, UTC] -> datetime, 2431/5279 missing (46.1%)
+2025-07-01 14:58:09,314 - INFO - Converted sm_signoff_ts: datetime64[ns, UTC] -> datetime, 2525/5279 missing (47.8%)
+2025-07-01 14:58:09,319 - INFO - Converted ci_invoice_approval_date: object -> datetime, 4502/5279 missing (85.3%)
+2025-07-01 14:58:09,323 - INFO - Converted ci_payment_date: object -> datetime, 4526/5279 missing (85.7%)
+2025-07-01 14:58:09,332 - INFO - Converted qc_schedule_date: object -> datetime, 3520/5279 missing (66.7%)
+2025-07-01 14:58:09,339 - INFO - Converted ffw_booking_ts: datetime64[ns, UTC] -> datetime, 2531/5279 missing (47.9%)
+2025-07-01 14:58:09,346 - INFO - Converted spd_ts: datetime64[ns, UTC] -> datetime, 2829/5279 missing (53.6%)
+2025-07-01 14:58:09,351 - INFO - Converted stock_pickup_date: object -> datetime, 3465/5279 missing (65.6%)
+2025-07-01 14:58:09,354 - INFO - Converted shipment_creation_date: object -> datetime, 3622/5279 missing (68.6%)
+2025-07-01 14:58:09,358 - INFO - Converted shipment_in_transit_date: object -> datetime, 3898/5279 missing (73.8%)
+2025-07-01 14:58:09,364 - INFO - Converted bi_invoice_approval_date: object -> datetime, 4180/5279 missing (79.2%)
+2025-07-01 14:58:09,367 - INFO - Converted bi_payment_date: object -> datetime, 4592/5279 missing (87.0%)
+2025-07-01 14:58:09,369 - INFO - Converted ffwp_telex_release_date: object -> datetime, 4939/5279 missing (93.6%)
+2025-07-01 14:58:09,372 - INFO - Converted shipment_stock_delivery_date: object -> datetime, 5142/5279 missing (97.4%)
+2025-07-01 14:58:09,376 - INFO - Converted item_receipt_date: object -> datetime, 5198/5279 missing (98.5%)
+2025-07-01 14:58:09,381 - INFO - Converted actual_cargo_pick_up_date: object -> datetime, 3681/5279 missing (69.7%)
+2025-07-01 14:58:09,385 - INFO - Converted actual_shipping_date: object -> datetime, 3736/5279 missing (70.8%)
+2025-07-01 14:58:09,387 - INFO - Converted actual_arrival_date: object -> datetime, 4726/5279 missing (89.5%)
+2025-07-01 14:58:09,390 - INFO - Converted actual_delivery_date: object -> datetime, 5133/5279 missing (97.2%)
+2025-07-01 14:58:09,391 - INFO - All required columns present
+2025-07-01 14:58:09,392 - INFO - Initializing TAT Calculator with config: stages_config.json
+2025-07-01 14:58:09,396 - WARNING - New modular TATCalculator not available, trying old version...
+2025-07-01 14:58:09,398 - ERROR - No TATCalculator available. Please ensure tat_calculator_main.py or tat_calculator.py is in the same directory.
+2025-07-01 14:58:09,399 - ERROR - Error in main execution: cannot import name 'TATCalculator' from 'tat_calculator' (unknown location)
+2025-07-01 15:10:24,666 - INFO - Output folders created: ['outputs/tat_results', 'outputs/delay_results', 'outputs/excel_exports', 'outputs/csv_files', 'outputs/logs']
+2025-07-01 15:10:24,667 - INFO - Setting up TAT calculation environment...
+2025-07-01 15:10:24,668 - INFO - Using provided dataframe
+2025-07-01 15:10:24,679 - INFO - Converted po_created_date: object -> datetime, 0/5279 missing (0.0%)
+2025-07-01 15:10:24,689 - INFO - Converted po_approval_date: object -> datetime, 10/5279 missing (0.2%)
+2025-07-01 15:10:24,702 - INFO - Converted supplier_confirmation_date: object -> datetime, 403/5279 missing (7.6%)
+2025-07-01 15:10:24,710 - INFO - Converted pi_invoice_approval_date: object -> datetime, 1786/5279 missing (33.8%)
+2025-07-01 15:10:24,717 - INFO - Converted pi_payment_date: object -> datetime, 1787/5279 missing (33.9%)
+2025-07-01 15:10:24,726 - INFO - Converted receive_first_prd_date: object -> datetime, 1271/5279 missing (24.1%)
+2025-07-01 15:10:24,735 - INFO - Converted prd_reconfirmed_date: object -> datetime, 2337/5279 missing (44.3%)
+2025-07-01 15:10:24,745 - INFO - Converted po_im_date_value: object -> datetime, 1858/5279 missing (35.2%)
+2025-07-01 15:10:24,755 - INFO - Converted po_sm_date_value: object -> datetime, 1959/5279 missing (37.1%)
+2025-07-01 15:10:24,768 - INFO - Converted batch_created_ts: datetime64[ns, UTC] -> datetime, 2431/5279 missing (46.1%)
+2025-07-01 15:10:24,781 - INFO - Converted sm_signoff_ts: datetime64[ns, UTC] -> datetime, 2525/5279 missing (47.8%)
+2025-07-01 15:10:24,788 - INFO - Converted ci_invoice_approval_date: object -> datetime, 4502/5279 missing (85.3%)
+2025-07-01 15:10:24,795 - INFO - Converted ci_payment_date: object -> datetime, 4526/5279 missing (85.7%)
+2025-07-01 15:10:24,802 - INFO - Converted qc_schedule_date: object -> datetime, 3520/5279 missing (66.7%)
+2025-07-01 15:10:24,815 - INFO - Converted ffw_booking_ts: datetime64[ns, UTC] -> datetime, 2531/5279 missing (47.9%)
+2025-07-01 15:10:24,821 - INFO - Converted spd_ts: datetime64[ns, UTC] -> datetime, 2829/5279 missing (53.6%)
+2025-07-01 15:10:24,831 - INFO - Converted stock_pickup_date: object -> datetime, 3465/5279 missing (65.6%)
+2025-07-01 15:10:24,842 - INFO - Converted shipment_creation_date: object -> datetime, 3622/5279 missing (68.6%)
+2025-07-01 15:10:24,855 - INFO - Converted shipment_in_transit_date: object -> datetime, 3898/5279 missing (73.8%)
+2025-07-01 15:10:24,861 - INFO - Converted bi_invoice_approval_date: object -> datetime, 4180/5279 missing (79.2%)
+2025-07-01 15:10:24,868 - INFO - Converted bi_payment_date: object -> datetime, 4592/5279 missing (87.0%)
+2025-07-01 15:10:24,872 - INFO - Converted ffwp_telex_release_date: object -> datetime, 4939/5279 missing (93.6%)
+2025-07-01 15:10:24,877 - INFO - Converted shipment_stock_delivery_date: object -> datetime, 5142/5279 missing (97.4%)
+2025-07-01 15:10:24,883 - INFO - Converted item_receipt_date: object -> datetime, 5198/5279 missing (98.5%)
+2025-07-01 15:10:24,888 - INFO - Converted actual_cargo_pick_up_date: object -> datetime, 3681/5279 missing (69.7%)
+2025-07-01 15:10:24,893 - INFO - Converted actual_shipping_date: object -> datetime, 3736/5279 missing (70.8%)
+2025-07-01 15:10:24,901 - INFO - Converted actual_arrival_date: object -> datetime, 4726/5279 missing (89.5%)
+2025-07-01 15:10:24,904 - INFO - Converted actual_delivery_date: object -> datetime, 5133/5279 missing (97.2%)
+2025-07-01 15:10:24,905 - INFO - All required columns present
+2025-07-01 15:10:24,905 - INFO - Initializing TAT Calculator with config: stages_config.json
+2025-07-01 15:10:24,910 - WARNING - New modular TATCalculator not available, trying old version...
+2025-07-01 15:10:24,911 - ERROR - No TATCalculator available. Please ensure tat_calculator_main.py or tat_calculator.py is in the same directory.
+2025-07-01 15:10:24,915 - ERROR - Error in main execution: cannot import name 'TATCalculator' from 'tat_calculator' (unknown location)
+2025-07-01 15:15:03,790 - INFO - Output folders created: ['outputs/tat_results', 'outputs/delay_results', 'outputs/excel_exports', 'outputs/csv_files', 'outputs/logs']
+2025-07-01 15:15:03,790 - INFO - Setting up TAT calculation environment...
+2025-07-01 15:15:03,791 - INFO - Using provided dataframe
+2025-07-01 15:15:03,800 - INFO - Converted po_created_date: object -> datetime, 0/5279 missing (0.0%)
+2025-07-01 15:15:03,807 - INFO - Converted po_approval_date: object -> datetime, 10/5279 missing (0.2%)
+2025-07-01 15:15:03,812 - INFO - Converted supplier_confirmation_date: object -> datetime, 403/5279 missing (7.6%)
+2025-07-01 15:15:03,817 - INFO - Converted pi_invoice_approval_date: object -> datetime, 1786/5279 missing (33.8%)
+2025-07-01 15:15:03,823 - INFO - Converted pi_payment_date: object -> datetime, 1787/5279 missing (33.9%)
+2025-07-01 15:15:03,832 - INFO - Converted receive_first_prd_date: object -> datetime, 1271/5279 missing (24.1%)
+2025-07-01 15:15:03,839 - INFO - Converted prd_reconfirmed_date: object -> datetime, 2337/5279 missing (44.3%)
+2025-07-01 15:15:03,844 - INFO - Converted po_im_date_value: object -> datetime, 1858/5279 missing (35.2%)
+2025-07-01 15:15:03,849 - INFO - Converted po_sm_date_value: object -> datetime, 1959/5279 missing (37.1%)
+2025-07-01 15:15:03,855 - INFO - Converted batch_created_ts: datetime64[ns, UTC] -> datetime, 2431/5279 missing (46.1%)
+2025-07-01 15:15:03,865 - INFO - Converted sm_signoff_ts: datetime64[ns, UTC] -> datetime, 2525/5279 missing (47.8%)
+2025-07-01 15:15:03,868 - INFO - Converted ci_invoice_approval_date: object -> datetime, 4502/5279 missing (85.3%)
+2025-07-01 15:15:03,875 - INFO - Converted ci_payment_date: object -> datetime, 4526/5279 missing (85.7%)
+2025-07-01 15:15:03,881 - INFO - Converted qc_schedule_date: object -> datetime, 3520/5279 missing (66.7%)
+2025-07-01 15:15:03,888 - INFO - Converted ffw_booking_ts: datetime64[ns, UTC] -> datetime, 2531/5279 missing (47.9%)
+2025-07-01 15:15:03,898 - INFO - Converted spd_ts: datetime64[ns, UTC] -> datetime, 2829/5279 missing (53.6%)
+2025-07-01 15:15:03,902 - INFO - Converted stock_pickup_date: object -> datetime, 3465/5279 missing (65.6%)
+2025-07-01 15:15:03,909 - INFO - Converted shipment_creation_date: object -> datetime, 3622/5279 missing (68.6%)
+2025-07-01 15:15:03,913 - INFO - Converted shipment_in_transit_date: object -> datetime, 3898/5279 missing (73.8%)
+2025-07-01 15:15:03,917 - INFO - Converted bi_invoice_approval_date: object -> datetime, 4180/5279 missing (79.2%)
+2025-07-01 15:15:03,919 - INFO - Converted bi_payment_date: object -> datetime, 4592/5279 missing (87.0%)
+2025-07-01 15:15:03,923 - INFO - Converted ffwp_telex_release_date: object -> datetime, 4939/5279 missing (93.6%)
+2025-07-01 15:15:03,927 - INFO - Converted shipment_stock_delivery_date: object -> datetime, 5142/5279 missing (97.4%)
+2025-07-01 15:15:03,929 - INFO - Converted item_receipt_date: object -> datetime, 5198/5279 missing (98.5%)
+2025-07-01 15:15:03,932 - INFO - Converted actual_cargo_pick_up_date: object -> datetime, 3681/5279 missing (69.7%)
+2025-07-01 15:15:03,936 - INFO - Converted actual_shipping_date: object -> datetime, 3736/5279 missing (70.8%)
+2025-07-01 15:15:03,939 - INFO - Converted actual_arrival_date: object -> datetime, 4726/5279 missing (89.5%)
+2025-07-01 15:15:03,942 - INFO - Converted actual_delivery_date: object -> datetime, 5133/5279 missing (97.2%)
+2025-07-01 15:15:03,943 - INFO - All required columns present
+2025-07-01 15:15:03,944 - INFO - Initializing TAT Calculator with config: stages_config.json
+2025-07-01 15:15:05,301 - WARNING - New modular TATCalculator not available, trying old version...
+2025-07-01 15:15:05,321 - ERROR - Configuration file not found: stages_config.json
+2025-07-01 15:15:05,322 - ERROR - Error in main execution: [Errno 2] No such file or directory: 'stages_config.json'
+2025-07-01 15:17:59,065 - INFO - Output folders created: ['outputs/tat_results', 'outputs/delay_results', 'outputs/excel_exports', 'outputs/csv_files', 'outputs/logs']
+2025-07-01 15:17:59,066 - INFO - Setting up TAT calculation environment...
+2025-07-01 15:17:59,066 - INFO - Using provided dataframe
+2025-07-01 15:17:59,071 - INFO - Converted po_created_date: object -> datetime, 0/5279 missing (0.0%)
+2025-07-01 15:17:59,077 - INFO - Converted po_approval_date: object -> datetime, 10/5279 missing (0.2%)
+2025-07-01 15:17:59,082 - INFO - Converted supplier_confirmation_date: object -> datetime, 403/5279 missing (7.6%)
+2025-07-01 15:17:59,087 - INFO - Converted pi_invoice_approval_date: object -> datetime, 1786/5279 missing (33.8%)
+2025-07-01 15:17:59,092 - INFO - Converted pi_payment_date: object -> datetime, 1787/5279 missing (33.9%)
+2025-07-01 15:17:59,096 - INFO - Converted receive_first_prd_date: object -> datetime, 1271/5279 missing (24.1%)
+2025-07-01 15:17:59,100 - INFO - Converted prd_reconfirmed_date: object -> datetime, 2337/5279 missing (44.3%)
+2025-07-01 15:17:59,104 - INFO - Converted po_im_date_value: object -> datetime, 1858/5279 missing (35.2%)
+2025-07-01 15:17:59,107 - INFO - Converted po_sm_date_value: object -> datetime, 1959/5279 missing (37.1%)
+2025-07-01 15:17:59,111 - INFO - Converted batch_created_ts: datetime64[ns, UTC] -> datetime, 2431/5279 missing (46.1%)
+2025-07-01 15:17:59,119 - INFO - Converted sm_signoff_ts: datetime64[ns, UTC] -> datetime, 2525/5279 missing (47.8%)
+2025-07-01 15:17:59,121 - INFO - Converted ci_invoice_approval_date: object -> datetime, 4502/5279 missing (85.3%)
+2025-07-01 15:17:59,123 - INFO - Converted ci_payment_date: object -> datetime, 4526/5279 missing (85.7%)
+2025-07-01 15:17:59,126 - INFO - Converted qc_schedule_date: object -> datetime, 3520/5279 missing (66.7%)
+2025-07-01 15:17:59,131 - INFO - Converted ffw_booking_ts: datetime64[ns, UTC] -> datetime, 2531/5279 missing (47.9%)
+2025-07-01 15:17:59,137 - INFO - Converted spd_ts: datetime64[ns, UTC] -> datetime, 2829/5279 missing (53.6%)
+2025-07-01 15:17:59,139 - INFO - Converted stock_pickup_date: object -> datetime, 3465/5279 missing (65.6%)
+2025-07-01 15:17:59,142 - INFO - Converted shipment_creation_date: object -> datetime, 3622/5279 missing (68.6%)
+2025-07-01 15:17:59,147 - INFO - Converted shipment_in_transit_date: object -> datetime, 3898/5279 missing (73.8%)
+2025-07-01 15:17:59,151 - INFO - Converted bi_invoice_approval_date: object -> datetime, 4180/5279 missing (79.2%)
+2025-07-01 15:17:59,154 - INFO - Converted bi_payment_date: object -> datetime, 4592/5279 missing (87.0%)
+2025-07-01 15:17:59,156 - INFO - Converted ffwp_telex_release_date: object -> datetime, 4939/5279 missing (93.6%)
+2025-07-01 15:17:59,158 - INFO - Converted shipment_stock_delivery_date: object -> datetime, 5142/5279 missing (97.4%)
+2025-07-01 15:17:59,159 - INFO - Converted item_receipt_date: object -> datetime, 5198/5279 missing (98.5%)
+2025-07-01 15:17:59,162 - INFO - Converted actual_cargo_pick_up_date: object -> datetime, 3681/5279 missing (69.7%)
+2025-07-01 15:17:59,170 - INFO - Converted actual_shipping_date: object -> datetime, 3736/5279 missing (70.8%)
+2025-07-01 15:17:59,172 - INFO - Converted actual_arrival_date: object -> datetime, 4726/5279 missing (89.5%)
+2025-07-01 15:17:59,173 - INFO - Converted actual_delivery_date: object -> datetime, 5133/5279 missing (97.2%)
+2025-07-01 15:17:59,174 - INFO - All required columns present
+2025-07-01 15:17:59,174 - INFO - Initializing TAT Calculator with config: stages_config.json
+2025-07-01 15:18:00,362 - WARNING - New modular TATCalculator not available, trying old version...
+2025-07-01 15:18:00,372 - ERROR - Configuration file not found: stages_config.json
+2025-07-01 15:18:00,373 - ERROR - Error in main execution: [Errno 2] No such file or directory: 'stages_config.json'
+2025-07-01 15:19:23,789 - INFO - Output folders created: ['outputs/tat_results', 'outputs/delay_results', 'outputs/excel_exports', 'outputs/csv_files', 'outputs/logs']
+2025-07-01 15:19:23,790 - INFO - Setting up TAT calculation environment...
+2025-07-01 15:19:23,790 - INFO - Using provided dataframe
+2025-07-01 15:19:23,816 - INFO - Converted po_created_date: object -> datetime, 0/5279 missing (0.0%)
+2025-07-01 15:19:23,822 - INFO - Converted po_approval_date: object -> datetime, 10/5279 missing (0.2%)
+2025-07-01 15:19:23,834 - INFO - Converted supplier_confirmation_date: object -> datetime, 403/5279 missing (7.6%)
+2025-07-01 15:19:23,840 - INFO - Converted pi_invoice_approval_date: object -> datetime, 1786/5279 missing (33.8%)
+2025-07-01 15:19:23,850 - INFO - Converted pi_payment_date: object -> datetime, 1787/5279 missing (33.9%)
+2025-07-01 15:19:23,857 - INFO - Converted receive_first_prd_date: object -> datetime, 1271/5279 missing (24.1%)
+2025-07-01 15:19:23,862 - INFO - Converted prd_reconfirmed_date: object -> datetime, 2337/5279 missing (44.3%)
+2025-07-01 15:19:23,872 - INFO - Converted po_im_date_value: object -> datetime, 1858/5279 missing (35.2%)
+2025-07-01 15:19:23,881 - INFO - Converted po_sm_date_value: object -> datetime, 1959/5279 missing (37.1%)
+2025-07-01 15:19:23,888 - INFO - Converted batch_created_ts: datetime64[ns, UTC] -> datetime, 2431/5279 missing (46.1%)
+2025-07-01 15:19:23,905 - INFO - Converted sm_signoff_ts: datetime64[ns, UTC] -> datetime, 2525/5279 missing (47.8%)
+2025-07-01 15:19:23,910 - INFO - Converted ci_invoice_approval_date: object -> datetime, 4502/5279 missing (85.3%)
+2025-07-01 15:19:23,916 - INFO - Converted ci_payment_date: object -> datetime, 4526/5279 missing (85.7%)
+2025-07-01 15:19:23,922 - INFO - Converted qc_schedule_date: object -> datetime, 3520/5279 missing (66.7%)
+2025-07-01 15:19:23,930 - INFO - Converted ffw_booking_ts: datetime64[ns, UTC] -> datetime, 2531/5279 missing (47.9%)
+2025-07-01 15:19:23,938 - INFO - Converted spd_ts: datetime64[ns, UTC] -> datetime, 2829/5279 missing (53.6%)
+2025-07-01 15:19:23,945 - INFO - Converted stock_pickup_date: object -> datetime, 3465/5279 missing (65.6%)
+2025-07-01 15:19:23,948 - INFO - Converted shipment_creation_date: object -> datetime, 3622/5279 missing (68.6%)
+2025-07-01 15:19:23,953 - INFO - Converted shipment_in_transit_date: object -> datetime, 3898/5279 missing (73.8%)
+2025-07-01 15:19:23,956 - INFO - Converted bi_invoice_approval_date: object -> datetime, 4180/5279 missing (79.2%)
+2025-07-01 15:19:23,962 - INFO - Converted bi_payment_date: object -> datetime, 4592/5279 missing (87.0%)
+2025-07-01 15:19:23,967 - INFO - Converted ffwp_telex_release_date: object -> datetime, 4939/5279 missing (93.6%)
+2025-07-01 15:19:23,970 - INFO - Converted shipment_stock_delivery_date: object -> datetime, 5142/5279 missing (97.4%)
+2025-07-01 15:19:23,972 - INFO - Converted item_receipt_date: object -> datetime, 5198/5279 missing (98.5%)
+2025-07-01 15:19:23,981 - INFO - Converted actual_cargo_pick_up_date: object -> datetime, 3681/5279 missing (69.7%)
+2025-07-01 15:19:23,985 - INFO - Converted actual_shipping_date: object -> datetime, 3736/5279 missing (70.8%)
+2025-07-01 15:19:23,988 - INFO - Converted actual_arrival_date: object -> datetime, 4726/5279 missing (89.5%)
+2025-07-01 15:19:23,992 - INFO - Converted actual_delivery_date: object -> datetime, 5133/5279 missing (97.2%)
+2025-07-01 15:19:23,994 - INFO - All required columns present
+2025-07-01 15:19:23,995 - INFO - Initializing TAT Calculator with config: stages_config.json
+2025-07-01 15:19:24,261 - WARNING - New modular TATCalculator not available, trying old version...
+2025-07-01 15:19:24,268 - ERROR - Configuration file not found: stages_config.json
+2025-07-01 15:19:24,268 - ERROR - Error in main execution: [Errno 2] No such file or directory: 'stages_config.json'
+2025-07-01 15:21:08,750 - INFO - Output folders created: ['outputs/tat_results', 'outputs/delay_results', 'outputs/excel_exports', 'outputs/csv_files', 'outputs/logs']
+2025-07-01 15:21:08,750 - INFO - Setting up TAT calculation environment...
+2025-07-01 15:21:08,751 - INFO - Using provided dataframe
+2025-07-01 15:21:08,757 - INFO - Converted po_created_date: object -> datetime, 0/5279 missing (0.0%)
+2025-07-01 15:21:08,760 - INFO - Converted po_approval_date: object -> datetime, 10/5279 missing (0.2%)
+2025-07-01 15:21:08,767 - INFO - Converted supplier_confirmation_date: object -> datetime, 403/5279 missing (7.6%)
+2025-07-01 15:21:08,777 - INFO - Converted pi_invoice_approval_date: object -> datetime, 1786/5279 missing (33.8%)
+2025-07-01 15:21:08,781 - INFO - Converted pi_payment_date: object -> datetime, 1787/5279 missing (33.9%)
+2025-07-01 15:21:08,787 - INFO - Converted receive_first_prd_date: object -> datetime, 1271/5279 missing (24.1%)
+2025-07-01 15:21:08,790 - INFO - Converted prd_reconfirmed_date: object -> datetime, 2337/5279 missing (44.3%)
+2025-07-01 15:21:08,793 - INFO - Converted po_im_date_value: object -> datetime, 1858/5279 missing (35.2%)
+2025-07-01 15:21:08,803 - INFO - Converted po_sm_date_value: object -> datetime, 1959/5279 missing (37.1%)
+2025-07-01 15:21:08,808 - INFO - Converted batch_created_ts: datetime64[ns, UTC] -> datetime, 2431/5279 missing (46.1%)
+2025-07-01 15:21:08,817 - INFO - Converted sm_signoff_ts: datetime64[ns, UTC] -> datetime, 2525/5279 missing (47.8%)
+2025-07-01 15:21:08,821 - INFO - Converted ci_invoice_approval_date: object -> datetime, 4502/5279 missing (85.3%)
+2025-07-01 15:21:08,826 - INFO - Converted ci_payment_date: object -> datetime, 4526/5279 missing (85.7%)
+2025-07-01 15:21:08,828 - INFO - Converted qc_schedule_date: object -> datetime, 3520/5279 missing (66.7%)
+2025-07-01 15:21:08,834 - INFO - Converted ffw_booking_ts: datetime64[ns, UTC] -> datetime, 2531/5279 missing (47.9%)
+2025-07-01 15:21:08,838 - INFO - Converted spd_ts: datetime64[ns, UTC] -> datetime, 2829/5279 missing (53.6%)
+2025-07-01 15:21:08,841 - INFO - Converted stock_pickup_date: object -> datetime, 3465/5279 missing (65.6%)
+2025-07-01 15:21:08,844 - INFO - Converted shipment_creation_date: object -> datetime, 3622/5279 missing (68.6%)
+2025-07-01 15:21:08,847 - INFO - Converted shipment_in_transit_date: object -> datetime, 3898/5279 missing (73.8%)
+2025-07-01 15:21:08,850 - INFO - Converted bi_invoice_approval_date: object -> datetime, 4180/5279 missing (79.2%)
+2025-07-01 15:21:08,854 - INFO - Converted bi_payment_date: object -> datetime, 4592/5279 missing (87.0%)
+2025-07-01 15:21:08,855 - INFO - Converted ffwp_telex_release_date: object -> datetime, 4939/5279 missing (93.6%)
+2025-07-01 15:21:08,857 - INFO - Converted shipment_stock_delivery_date: object -> datetime, 5142/5279 missing (97.4%)
+2025-07-01 15:21:08,858 - INFO - Converted item_receipt_date: object -> datetime, 5198/5279 missing (98.5%)
+2025-07-01 15:21:08,861 - INFO - Converted actual_cargo_pick_up_date: object -> datetime, 3681/5279 missing (69.7%)
+2025-07-01 15:21:08,865 - INFO - Converted actual_shipping_date: object -> datetime, 3736/5279 missing (70.8%)
+2025-07-01 15:21:08,868 - INFO - Converted actual_arrival_date: object -> datetime, 4726/5279 missing (89.5%)
+2025-07-01 15:21:08,871 - INFO - Converted actual_delivery_date: object -> datetime, 5133/5279 missing (97.2%)
+2025-07-01 15:21:08,871 - INFO - All required columns present
+2025-07-01 15:21:08,872 - INFO - Initializing TAT Calculator with config: stages_config.json
+2025-07-01 15:21:09,046 - ERROR - Configuration file not found: stages_config.json
+2025-07-01 15:21:09,047 - ERROR - Error initializing calculator: [Errno 2] No such file or directory: 'stages_config.json'
+2025-07-01 15:21:09,047 - ERROR - Error in main execution: [Errno 2] No such file or directory: 'stages_config.json'
+2025-07-01 15:24:38,991 - INFO - Output folders created: ['outputs/tat_results', 'outputs/delay_results', 'outputs/excel_exports', 'outputs/csv_files', 'outputs/logs']
+2025-07-01 15:24:38,992 - INFO - Setting up TAT calculation environment...
+2025-07-01 15:24:38,993 - INFO - Using provided dataframe
+2025-07-01 15:24:39,009 - INFO - Converted po_created_date: object -> datetime, 0/5279 missing (0.0%)
+2025-07-01 15:24:39,020 - INFO - Converted po_approval_date: object -> datetime, 10/5279 missing (0.2%)
+2025-07-01 15:24:39,042 - INFO - Converted supplier_confirmation_date: object -> datetime, 403/5279 missing (7.6%)
+2025-07-01 15:24:39,058 - INFO - Converted pi_invoice_approval_date: object -> datetime, 1786/5279 missing (33.8%)
+2025-07-01 15:24:39,070 - INFO - Converted pi_payment_date: object -> datetime, 1787/5279 missing (33.9%)
+2025-07-01 15:24:39,087 - INFO - Converted receive_first_prd_date: object -> datetime, 1271/5279 missing (24.1%)
+2025-07-01 15:24:39,098 - INFO - Converted prd_reconfirmed_date: object -> datetime, 2337/5279 missing (44.3%)
+2025-07-01 15:24:39,114 - INFO - Converted po_im_date_value: object -> datetime, 1858/5279 missing (35.2%)
+2025-07-01 15:24:39,131 - INFO - Converted po_sm_date_value: object -> datetime, 1959/5279 missing (37.1%)
+2025-07-01 15:24:39,146 - INFO - Converted batch_created_ts: datetime64[ns, UTC] -> datetime, 2431/5279 missing (46.1%)
+2025-07-01 15:24:39,162 - INFO - Converted sm_signoff_ts: datetime64[ns, UTC] -> datetime, 2525/5279 missing (47.8%)
+2025-07-01 15:24:39,171 - INFO - Converted ci_invoice_approval_date: object -> datetime, 4502/5279 missing (85.3%)
+2025-07-01 15:24:39,180 - INFO - Converted ci_payment_date: object -> datetime, 4526/5279 missing (85.7%)
+2025-07-01 15:24:39,195 - INFO - Converted qc_schedule_date: object -> datetime, 3520/5279 missing (66.7%)
+2025-07-01 15:24:39,209 - INFO - Converted ffw_booking_ts: datetime64[ns, UTC] -> datetime, 2531/5279 missing (47.9%)
+2025-07-01 15:24:39,219 - INFO - Converted spd_ts: datetime64[ns, UTC] -> datetime, 2829/5279 missing (53.6%)
+2025-07-01 15:24:39,228 - INFO - Converted stock_pickup_date: object -> datetime, 3465/5279 missing (65.6%)
+2025-07-01 15:24:39,237 - INFO - Converted shipment_creation_date: object -> datetime, 3622/5279 missing (68.6%)
+2025-07-01 15:24:39,245 - INFO - Converted shipment_in_transit_date: object -> datetime, 3898/5279 missing (73.8%)
+2025-07-01 15:24:39,252 - INFO - Converted bi_invoice_approval_date: object -> datetime, 4180/5279 missing (79.2%)
+2025-07-01 15:24:39,260 - INFO - Converted bi_payment_date: object -> datetime, 4592/5279 missing (87.0%)
+2025-07-01 15:24:39,266 - INFO - Converted ffwp_telex_release_date: object -> datetime, 4939/5279 missing (93.6%)
+2025-07-01 15:24:39,270 - INFO - Converted shipment_stock_delivery_date: object -> datetime, 5142/5279 missing (97.4%)
+2025-07-01 15:24:39,275 - INFO - Converted item_receipt_date: object -> datetime, 5198/5279 missing (98.5%)
+2025-07-01 15:24:39,283 - INFO - Converted actual_cargo_pick_up_date: object -> datetime, 3681/5279 missing (69.7%)
+2025-07-01 15:24:39,291 - INFO - Converted actual_shipping_date: object -> datetime, 3736/5279 missing (70.8%)
+2025-07-01 15:24:39,296 - INFO - Converted actual_arrival_date: object -> datetime, 4726/5279 missing (89.5%)
+2025-07-01 15:24:39,348 - INFO - Converted actual_delivery_date: object -> datetime, 5133/5279 missing (97.2%)
+2025-07-01 15:24:39,363 - INFO - All required columns present
+2025-07-01 15:24:39,364 - INFO - Initializing TAT Calculator with config: stages_config.json
+2025-07-01 15:24:39,642 - ERROR - Configuration file not found: stages_config.json
+2025-07-01 15:24:39,643 - ERROR - Error initializing calculator: [Errno 2] No such file or directory: 'stages_config.json'
+2025-07-01 15:24:39,643 - ERROR - Error in main execution: [Errno 2] No such file or directory: 'stages_config.json'
+2025-07-01 15:29:41,020 - INFO - Output folders created: ['outputs/tat_results', 'outputs/delay_results', 'outputs/excel_exports', 'outputs/csv_files', 'outputs/logs']
+2025-07-01 15:29:41,021 - INFO - Setting up TAT calculation environment...
+2025-07-01 15:29:41,021 - INFO - Using provided dataframe
+2025-07-01 15:29:41,037 - INFO - Converted po_created_date: object -> datetime, 0/5279 missing (0.0%)
+2025-07-01 15:29:41,047 - INFO - Converted po_approval_date: object -> datetime, 10/5279 missing (0.2%)
+2025-07-01 15:29:41,055 - INFO - Converted supplier_confirmation_date: object -> datetime, 403/5279 missing (7.6%)
+2025-07-01 15:29:41,066 - INFO - Converted pi_invoice_approval_date: object -> datetime, 1786/5279 missing (33.8%)
+2025-07-01 15:29:41,073 - INFO - Converted pi_payment_date: object -> datetime, 1787/5279 missing (33.9%)
+2025-07-01 15:29:41,082 - INFO - Converted receive_first_prd_date: object -> datetime, 1271/5279 missing (24.1%)
+2025-07-01 15:29:41,089 - INFO - Converted prd_reconfirmed_date: object -> datetime, 2337/5279 missing (44.3%)
+2025-07-01 15:29:41,100 - INFO - Converted po_im_date_value: object -> datetime, 1858/5279 missing (35.2%)
+2025-07-01 15:29:41,108 - INFO - Converted po_sm_date_value: object -> datetime, 1959/5279 missing (37.1%)
+2025-07-01 15:29:41,119 - INFO - Converted batch_created_ts: datetime64[ns, UTC] -> datetime, 2431/5279 missing (46.1%)
+2025-07-01 15:29:41,136 - INFO - Converted sm_signoff_ts: datetime64[ns, UTC] -> datetime, 2525/5279 missing (47.8%)
+2025-07-01 15:29:41,140 - INFO - Converted ci_invoice_approval_date: object -> datetime, 4502/5279 missing (85.3%)
+2025-07-01 15:29:41,149 - INFO - Converted ci_payment_date: object -> datetime, 4526/5279 missing (85.7%)
+2025-07-01 15:29:41,155 - INFO - Converted qc_schedule_date: object -> datetime, 3520/5279 missing (66.7%)
+2025-07-01 15:29:41,165 - INFO - Converted ffw_booking_ts: datetime64[ns, UTC] -> datetime, 2531/5279 missing (47.9%)
+2025-07-01 15:29:41,172 - INFO - Converted spd_ts: datetime64[ns, UTC] -> datetime, 2829/5279 missing (53.6%)
+2025-07-01 15:29:41,179 - INFO - Converted stock_pickup_date: object -> datetime, 3465/5279 missing (65.6%)
+2025-07-01 15:29:41,185 - INFO - Converted shipment_creation_date: object -> datetime, 3622/5279 missing (68.6%)
+2025-07-01 15:29:41,191 - INFO - Converted shipment_in_transit_date: object -> datetime, 3898/5279 missing (73.8%)
+2025-07-01 15:29:41,198 - INFO - Converted bi_invoice_approval_date: object -> datetime, 4180/5279 missing (79.2%)
+2025-07-01 15:29:41,203 - INFO - Converted bi_payment_date: object -> datetime, 4592/5279 missing (87.0%)
+2025-07-01 15:29:41,207 - INFO - Converted ffwp_telex_release_date: object -> datetime, 4939/5279 missing (93.6%)
+2025-07-01 15:29:41,213 - INFO - Converted shipment_stock_delivery_date: object -> datetime, 5142/5279 missing (97.4%)
+2025-07-01 15:29:41,217 - INFO - Converted item_receipt_date: object -> datetime, 5198/5279 missing (98.5%)
+2025-07-01 15:29:41,222 - INFO - Converted actual_cargo_pick_up_date: object -> datetime, 3681/5279 missing (69.7%)
+2025-07-01 15:29:41,228 - INFO - Converted actual_shipping_date: object -> datetime, 3736/5279 missing (70.8%)
+2025-07-01 15:29:41,233 - INFO - Converted actual_arrival_date: object -> datetime, 4726/5279 missing (89.5%)
+2025-07-01 15:29:41,237 - INFO - Converted actual_delivery_date: object -> datetime, 5133/5279 missing (97.2%)
+2025-07-01 15:29:41,238 - INFO - All required columns present
+2025-07-01 15:29:41,238 - INFO - Initializing TAT Calculator with config: stages_config.json
+2025-07-01 15:29:41,547 - ERROR - Configuration file not found: stages_config.json
+2025-07-01 15:29:41,547 - ERROR - Error initializing calculator: [Errno 2] No such file or directory: 'stages_config.json'
+2025-07-01 15:29:41,548 - ERROR - Error in main execution: [Errno 2] No such file or directory: 'stages_config.json'
+2025-07-01 15:50:02,097 - INFO - Output folders created: ['outputs/tat_results', 'outputs/delay_results', 'outputs/excel_exports', 'outputs/csv_files', 'outputs/logs']
+2025-07-01 15:50:02,098 - INFO - Setting up TAT calculation environment...
+2025-07-01 15:50:02,098 - INFO - Using provided dataframe
+2025-07-01 15:50:02,105 - INFO - Converted po_created_date: object -> datetime, 0/5279 missing (0.0%)
+2025-07-01 15:50:02,112 - INFO - Converted po_approval_date: object -> datetime, 10/5279 missing (0.2%)
+2025-07-01 15:50:02,119 - INFO - Converted supplier_confirmation_date: object -> datetime, 403/5279 missing (7.6%)
+2025-07-01 15:50:02,123 - INFO - Converted pi_invoice_approval_date: object -> datetime, 1786/5279 missing (33.8%)
+2025-07-01 15:50:02,131 - INFO - Converted pi_payment_date: object -> datetime, 1787/5279 missing (33.9%)
+2025-07-01 15:50:02,138 - INFO - Converted receive_first_prd_date: object -> datetime, 1271/5279 missing (24.1%)
+2025-07-01 15:50:02,144 - INFO - Converted prd_reconfirmed_date: object -> datetime, 2337/5279 missing (44.3%)
+2025-07-01 15:50:02,151 - INFO - Converted po_im_date_value: object -> datetime, 1858/5279 missing (35.2%)
+2025-07-01 15:50:02,155 - INFO - Converted po_sm_date_value: object -> datetime, 1959/5279 missing (37.1%)
+2025-07-01 15:50:02,162 - INFO - Converted batch_created_ts: datetime64[ns, UTC] -> datetime, 2431/5279 missing (46.1%)
+2025-07-01 15:50:02,170 - INFO - Converted sm_signoff_ts: datetime64[ns, UTC] -> datetime, 2525/5279 missing (47.8%)
+2025-07-01 15:50:02,173 - INFO - Converted ci_invoice_approval_date: object -> datetime, 4502/5279 missing (85.3%)
+2025-07-01 15:50:02,178 - INFO - Converted ci_payment_date: object -> datetime, 4526/5279 missing (85.7%)
+2025-07-01 15:50:02,184 - INFO - Converted qc_schedule_date: object -> datetime, 3520/5279 missing (66.7%)
+2025-07-01 15:50:02,189 - INFO - Converted ffw_booking_ts: datetime64[ns, UTC] -> datetime, 2531/5279 missing (47.9%)
+2025-07-01 15:50:02,199 - INFO - Converted spd_ts: datetime64[ns, UTC] -> datetime, 2829/5279 missing (53.6%)
+2025-07-01 15:50:02,204 - INFO - Converted stock_pickup_date: object -> datetime, 3465/5279 missing (65.6%)
+2025-07-01 15:50:02,210 - INFO - Converted shipment_creation_date: object -> datetime, 3622/5279 missing (68.6%)
+2025-07-01 15:50:02,214 - INFO - Converted shipment_in_transit_date: object -> datetime, 3898/5279 missing (73.8%)
+2025-07-01 15:50:02,217 - INFO - Converted bi_invoice_approval_date: object -> datetime, 4180/5279 missing (79.2%)
+2025-07-01 15:50:02,220 - INFO - Converted bi_payment_date: object -> datetime, 4592/5279 missing (87.0%)
+2025-07-01 15:50:02,221 - INFO - Converted ffwp_telex_release_date: object -> datetime, 4939/5279 missing (93.6%)
+2025-07-01 15:50:02,223 - INFO - Converted shipment_stock_delivery_date: object -> datetime, 5142/5279 missing (97.4%)
+2025-07-01 15:50:02,228 - INFO - Converted item_receipt_date: object -> datetime, 5198/5279 missing (98.5%)
+2025-07-01 15:50:02,233 - INFO - Converted actual_cargo_pick_up_date: object -> datetime, 3681/5279 missing (69.7%)
+2025-07-01 15:50:02,235 - INFO - Converted actual_shipping_date: object -> datetime, 3736/5279 missing (70.8%)
+2025-07-01 15:50:02,238 - INFO - Converted actual_arrival_date: object -> datetime, 4726/5279 missing (89.5%)
+2025-07-01 15:50:02,240 - INFO - Converted actual_delivery_date: object -> datetime, 5133/5279 missing (97.2%)
+2025-07-01 15:50:02,240 - INFO - All required columns present
+2025-07-01 15:50:02,240 - INFO - Initializing TAT Calculator with config: stages_config.json
+2025-07-01 15:50:03,434 - INFO - TAT Calculator initialized with 31 stages
+2025-07-01 15:50:03,434 - INFO - TAT Calculator initialized successfully
+2025-07-01 15:50:03,434 - INFO - Setup completed successfully!
+2025-07-01 15:50:03,435 - INFO - Processing sample of 5 POs
+2025-07-01 15:50:03,435 - INFO - Using integrated delay calculation...
+2025-07-01 15:50:03,453 - INFO - Processed PO: PO356101HKGA-0000153
+2025-07-01 15:50:03,470 - INFO - Processed PO: PO356102HKGA-0000034
+2025-07-01 15:50:03,487 - INFO - Processed PO: PO359395M2B4-00040635
+2025-07-01 15:50:03,505 - INFO - Processed PO: PO359395M2B4-10002852
+2025-07-01 15:50:03,515 - ERROR - Error evaluating expression '': invalid syntax (<unknown>, line 0)
+2025-07-01 15:50:03,516 - INFO - Processed PO: PO359395M2B4-100178102
+2025-07-01 15:50:03,520 - WARNING - No valid target timestamp found in stage result: 10. PRD Confirmation Pending
+2025-07-01 15:50:03,524 - WARNING - No valid target timestamp found in stage result: 15. CI Approval Pending
+2025-07-01 15:50:03,524 - WARNING - No valid target timestamp found in stage result: 16. CI Payment Pending
+2025-07-01 15:50:03,534 - WARNING - No valid target timestamp found in stage result: 10. PRD Confirmation Pending
+2025-07-01 15:50:03,537 - WARNING - No valid target timestamp found in stage result: 15. CI Approval Pending
+2025-07-01 15:50:03,537 - WARNING - No valid target timestamp found in stage result: 16. CI Payment Pending
+2025-07-01 15:50:03,549 - WARNING - No valid target timestamp found in stage result: 10. PRD Confirmation Pending
+2025-07-01 15:50:03,551 - WARNING - No valid target timestamp found in stage result: 15. CI Approval Pending
+2025-07-01 15:50:03,552 - WARNING - No valid target timestamp found in stage result: 16. CI Payment Pending
+2025-07-01 15:50:03,563 - WARNING - No valid target timestamp found in stage result: 10. PRD Confirmation Pending
+2025-07-01 15:50:03,564 - WARNING - No valid target timestamp found in stage result: 15. CI Approval Pending
+2025-07-01 15:50:03,565 - WARNING - No valid target timestamp found in stage result: 16. CI Payment Pending
+2025-07-01 15:50:03,572 - WARNING - No valid target timestamp found in stage result: 10. PRD Confirmation Pending
+2025-07-01 15:50:03,573 - WARNING - No valid target timestamp found in stage result: 11. IM Sign-Off Pending
+2025-07-01 15:50:03,573 - WARNING - No valid target timestamp found in stage result: 12. Ready for Batching Pending
+2025-07-01 15:50:03,573 - WARNING - No valid target timestamp found in stage result: 13. Batch Creation Pending
+2025-07-01 15:50:03,575 - WARNING - No valid target timestamp found in stage result: 14. SM Sign-Off Pending
+2025-07-01 15:50:03,575 - WARNING - No valid target timestamp found in stage result: 15. CI Approval Pending
+2025-07-01 15:50:03,576 - WARNING - No valid target timestamp found in stage result: 16. CI Payment Pending
+2025-07-01 15:50:03,576 - WARNING - No valid target timestamp found in stage result: 17. QC Schedule Pending
+2025-07-01 15:50:03,576 - WARNING - No valid target timestamp found in stage result: 18. FFW Booking Missing
+2025-07-01 15:50:03,577 - WARNING - No valid target timestamp found in stage result: 19. Supplier Pickup Date Pending
+2025-07-01 15:50:03,577 - WARNING - No valid target timestamp found in stage result: 20. Pre Pickup Check
+2025-07-01 15:50:03,577 - WARNING - No valid target timestamp found in stage result: 21. FOB Pickup Pending
+2025-07-01 15:50:03,578 - WARNING - No valid target timestamp found in stage result: 22. Non FOB Pickup Pending
+2025-07-01 15:50:03,578 - WARNING - No valid target timestamp found in stage result: 23. INB Creation Pending
+2025-07-01 15:50:03,578 - WARNING - No valid target timestamp found in stage result: 24. Mark In-Transit Pending
+2025-07-01 15:50:03,578 - WARNING - No valid target timestamp found in stage result: 25. BL Approval Pending
+2025-07-01 15:50:03,579 - WARNING - No valid target timestamp found in stage result: 26. BL Payment Pending - In Transit
+2025-07-01 15:50:03,579 - WARNING - No valid target timestamp found in stage result: 27. BL Payment Pending - Arrived
+2025-07-01 15:50:03,579 - WARNING - No valid target timestamp found in stage result: 28. Telex Release Pending
+2025-07-01 15:50:03,580 - WARNING - No valid target timestamp found in stage result: 29. Stock Delivery Pending
+2025-07-01 15:50:03,580 - WARNING - No valid target timestamp found in stage result: 30. Stock Receiving Pending
+2025-07-01 15:50:03,580 - WARNING - No valid target timestamp found in stage result: 31. Dispute - PO Closing Pending
+2025-07-01 15:50:03,580 - INFO - Completed calculations with integrated delays: 5 TAT results, 5 delay analyses
+2025-07-01 15:50:03,581 - ERROR - Error in main execution: 'charmap' codec can't encode character '\U0001f4ca' in position 2: character maps to <undefined>
+2025-07-01 16:41:38,090 - INFO - Output folders created: ['outputs/tat_results', 'outputs/delay_results', 'outputs/excel_exports', 'outputs/csv_files', 'outputs/logs']
+2025-07-01 16:41:38,091 - INFO - Setting up TAT calculation environment...
+2025-07-01 16:41:38,091 - INFO - Using provided dataframe
+2025-07-01 16:41:38,102 - INFO - Converted po_created_date: object -> datetime, 0/5275 missing (0.0%)
+2025-07-01 16:41:38,155 - INFO - Converted po_approval_date: object -> datetime, 10/5275 missing (0.2%)
+2025-07-01 16:41:38,170 - INFO - Converted supplier_confirmation_date: object -> datetime, 403/5275 missing (7.6%)
+2025-07-01 16:41:38,174 - INFO - Converted pi_invoice_approval_date: object -> datetime, 1784/5275 missing (33.8%)
+2025-07-01 16:41:38,177 - INFO - Converted pi_payment_date: object -> datetime, 1785/5275 missing (33.8%)
+2025-07-01 16:41:38,182 - INFO - Converted receive_first_prd_date: object -> datetime, 1268/5275 missing (24.0%)
+2025-07-01 16:41:38,187 - INFO - Converted prd_reconfirmed_date: object -> datetime, 2334/5275 missing (44.2%)
+2025-07-01 16:41:38,190 - INFO - Converted po_im_date_value: object -> datetime, 1855/5275 missing (35.2%)
+2025-07-01 16:41:38,193 - INFO - Converted po_sm_date_value: object -> datetime, 1956/5275 missing (37.1%)
+2025-07-01 16:41:38,199 - INFO - Converted batch_created_ts: datetime64[ns, UTC] -> datetime, 2428/5275 missing (46.0%)
+2025-07-01 16:41:38,207 - INFO - Converted sm_signoff_ts: datetime64[ns, UTC] -> datetime, 2522/5275 missing (47.8%)
+2025-07-01 16:41:38,209 - INFO - Converted ci_invoice_approval_date: object -> datetime, 4498/5275 missing (85.3%)
+2025-07-01 16:41:38,211 - INFO - Converted ci_payment_date: object -> datetime, 4522/5275 missing (85.7%)
+2025-07-01 16:41:38,214 - INFO - Converted qc_schedule_date: object -> datetime, 3516/5275 missing (66.7%)
+2025-07-01 16:41:38,219 - INFO - Converted ffw_booking_ts: datetime64[ns, UTC] -> datetime, 2528/5275 missing (47.9%)
+2025-07-01 16:41:38,223 - INFO - Converted spd_ts: datetime64[ns, UTC] -> datetime, 2826/5275 missing (53.6%)
+2025-07-01 16:41:38,225 - INFO - Converted stock_pickup_date: object -> datetime, 3462/5275 missing (65.6%)
+2025-07-01 16:41:38,227 - INFO - Converted shipment_creation_date: object -> datetime, 3619/5275 missing (68.6%)
+2025-07-01 16:41:38,230 - INFO - Converted shipment_in_transit_date: object -> datetime, 3895/5275 missing (73.8%)
+2025-07-01 16:41:38,235 - INFO - Converted bi_invoice_approval_date: object -> datetime, 4177/5275 missing (79.2%)
+2025-07-01 16:41:38,238 - INFO - Converted bi_payment_date: object -> datetime, 4589/5275 missing (87.0%)
+2025-07-01 16:41:38,240 - INFO - Converted ffwp_telex_release_date: object -> datetime, 4936/5275 missing (93.6%)
+2025-07-01 16:41:38,241 - INFO - Converted shipment_stock_delivery_date: object -> datetime, 5138/5275 missing (97.4%)
+2025-07-01 16:41:38,243 - INFO - Converted item_receipt_date: object -> datetime, 5194/5275 missing (98.5%)
+2025-07-01 16:41:38,245 - INFO - Converted actual_cargo_pick_up_date: object -> datetime, 3678/5275 missing (69.7%)
+2025-07-01 16:41:38,251 - INFO - Converted actual_shipping_date: object -> datetime, 3733/5275 missing (70.8%)
+2025-07-01 16:41:38,253 - INFO - Converted actual_arrival_date: object -> datetime, 4723/5275 missing (89.5%)
+2025-07-01 16:41:38,254 - INFO - Converted actual_delivery_date: object -> datetime, 5130/5275 missing (97.3%)
+2025-07-01 16:41:38,255 - INFO - All required columns present
+2025-07-01 16:41:38,255 - INFO - Initializing TAT Calculator with config: stages_config.json
+2025-07-01 16:41:39,219 - INFO - TAT Calculator initialized with 31 stages
+2025-07-01 16:41:39,219 - INFO - TAT Calculator initialized successfully
+2025-07-01 16:41:39,220 - INFO - Setup completed successfully!
+2025-07-01 16:41:39,220 - INFO - Processing sample of 5 POs
+2025-07-01 16:41:39,220 - INFO - Using integrated delay calculation...
+2025-07-01 16:41:39,239 - INFO - Processed PO: PO356101HKGA-0000153
+2025-07-01 16:41:39,253 - INFO - Processed PO: PO356102HKGA-0000034
+2025-07-01 16:41:39,264 - INFO - Processed PO: PO359395M2B4-00040635
+2025-07-01 16:41:39,275 - INFO - Processed PO: PO359395M2B4-10002852
+2025-07-01 16:41:39,280 - ERROR - Error evaluating expression '': invalid syntax (<unknown>, line 0)
+2025-07-01 16:41:39,281 - INFO - Processed PO: PO359395M2B4-100178102
+2025-07-01 16:41:39,287 - WARNING - No valid target timestamp found in stage result: 10. PRD Confirmation Pending
+2025-07-01 16:41:39,289 - WARNING - No valid target timestamp found in stage result: 15. CI Approval Pending
+2025-07-01 16:41:39,289 - WARNING - No valid target timestamp found in stage result: 16. CI Payment Pending
+2025-07-01 16:41:39,296 - WARNING - No valid target timestamp found in stage result: 10. PRD Confirmation Pending
+2025-07-01 16:41:39,300 - WARNING - No valid target timestamp found in stage result: 15. CI Approval Pending
+2025-07-01 16:41:39,300 - WARNING - No valid target timestamp found in stage result: 16. CI Payment Pending
+2025-07-01 16:41:39,307 - WARNING - No valid target timestamp found in stage result: 10. PRD Confirmation Pending
+2025-07-01 16:41:39,309 - WARNING - No valid target timestamp found in stage result: 15. CI Approval Pending
+2025-07-01 16:41:39,309 - WARNING - No valid target timestamp found in stage result: 16. CI Payment Pending
+2025-07-01 16:41:39,316 - WARNING - No valid target timestamp found in stage result: 10. PRD Confirmation Pending
+2025-07-01 16:41:39,320 - WARNING - No valid target timestamp found in stage result: 15. CI Approval Pending
+2025-07-01 16:41:39,321 - WARNING - No valid target timestamp found in stage result: 16. CI Payment Pending
+2025-07-01 16:41:39,327 - WARNING - No valid target timestamp found in stage result: 10. PRD Confirmation Pending
+2025-07-01 16:41:39,327 - WARNING - No valid target timestamp found in stage result: 11. IM Sign-Off Pending
+2025-07-01 16:41:39,328 - WARNING - No valid target timestamp found in stage result: 12. Ready for Batching Pending
+2025-07-01 16:41:39,328 - WARNING - No valid target timestamp found in stage result: 13. Batch Creation Pending
+2025-07-01 16:41:39,329 - WARNING - No valid target timestamp found in stage result: 14. SM Sign-Off Pending
+2025-07-01 16:41:39,329 - WARNING - No valid target timestamp found in stage result: 15. CI Approval Pending
+2025-07-01 16:41:39,329 - WARNING - No valid target timestamp found in stage result: 16. CI Payment Pending
+2025-07-01 16:41:39,330 - WARNING - No valid target timestamp found in stage result: 17. QC Schedule Pending
+2025-07-01 16:41:39,330 - WARNING - No valid target timestamp found in stage result: 18. FFW Booking Missing
+2025-07-01 16:41:39,330 - WARNING - No valid target timestamp found in stage result: 19. Supplier Pickup Date Pending
+2025-07-01 16:41:39,331 - WARNING - No valid target timestamp found in stage result: 20. Pre Pickup Check
+2025-07-01 16:41:39,331 - WARNING - No valid target timestamp found in stage result: 21. FOB Pickup Pending
+2025-07-01 16:41:39,331 - WARNING - No valid target timestamp found in stage result: 22. Non FOB Pickup Pending
+2025-07-01 16:41:39,331 - WARNING - No valid target timestamp found in stage result: 23. INB Creation Pending
+2025-07-01 16:41:39,331 - WARNING - No valid target timestamp found in stage result: 24. Mark In-Transit Pending
+2025-07-01 16:41:39,331 - WARNING - No valid target timestamp found in stage result: 25. BL Approval Pending
+2025-07-01 16:41:39,331 - WARNING - No valid target timestamp found in stage result: 26. BL Payment Pending - In Transit
+2025-07-01 16:41:39,331 - WARNING - No valid target timestamp found in stage result: 27. BL Payment Pending - Arrived
+2025-07-01 16:41:39,331 - WARNING - No valid target timestamp found in stage result: 28. Telex Release Pending
+2025-07-01 16:41:39,332 - WARNING - No valid target timestamp found in stage result: 29. Stock Delivery Pending
+2025-07-01 16:41:39,332 - WARNING - No valid target timestamp found in stage result: 30. Stock Receiving Pending
+2025-07-01 16:41:39,332 - WARNING - No valid target timestamp found in stage result: 31. Dispute - PO Closing Pending
+2025-07-01 16:41:39,333 - INFO - Completed calculations with integrated delays: 5 TAT results, 5 delay analyses
+2025-07-01 16:41:39,333 - ERROR - Error in main execution: 'charmap' codec can't encode character '\U0001f4ca' in position 2: character maps to <undefined>

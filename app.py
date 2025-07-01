@@ -1,4 +1,5 @@
 from imports import *
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 from ingestion_tables import main as ingestion_tables_main
 from ingestion_excels import main as ingestion_excels_main
 from main import main as cal_main
@@ -39,17 +40,17 @@ for step in tqdm(steps, desc="Overall Progress", unit="step"):
     elif step == "Ingest tables":
         dfs_tables = ingestion_tables_main(creds)
     elif step == "Ingest excels":
-        dfs_excels = ingestion_excels_main(creds)
+        # dfs_excels = ingestion_excels_main(creds)
         continue
     elif step == "Calculate final dataframe":
-        final_df = cal_main(dfs_tables, dfs_excels)
+        # final_df = cal_main(dfs_tables, dfs_excels)
         continue
     elif step == "Calculate DoD view":
-        ## final_df = pd.DataFrame()
+        final_df = pd.DataFrame()
         # final_df = dod_main(final_df, dfs_tables['dod_data'])
-        # with open(os.devnull, 'w') as fnull:
-        #     with redirect_stdout(fnull):
-        #         final_df = dod_main(final_df, dfs_tables['dod_data'])
+        with open(os.devnull, 'w') as fnull:
+            with redirect_stdout(fnull):
+                final_df = dod_main(final_df, dfs_tables['dod_data'])
         continue
     elif step == "Upload to SharePoint":
         root_url = "https://razrgroup.sharepoint.com/sites/Razor"
