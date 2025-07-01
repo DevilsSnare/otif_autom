@@ -79,6 +79,7 @@ def main(creds):
             break
         except Exception as e:
             if attempt < 2:
+                print(f'FFW Reporting failed, starting try num: {attempt+1}')
                 time.sleep(5)
             else:
                 raise
@@ -167,7 +168,7 @@ def main(creds):
     ## FF E2E Tracker V3
     for attempt in range(3):
         try:
-            ffw_status = fetch_from_sharepoint(root_url, relative_url, "FF E2E Tracker_V3.xlsx", "Main Sheet") ## pending
+            ffw_status = fetch_from_sharepoint_excel_large_files(root_url, relative_url, "FF E2E Tracker_V3.xlsx", "Main Sheet") ## pending
             ffw_status.columns = ffw_status.iloc[0]
             ffw_status = ffw_status[1:].reset_index(drop=True)
             ffw_status = ffw_status.rename(columns={"SubStatus": "SubStatus.1"})
@@ -177,6 +178,7 @@ def main(creds):
             break
         except Exception as e:
             if attempt < 2:
+                print(f'FFW Reporting failed, starting try num: {attempt+1}')
                 time.sleep(5)
             else:
                 raise
