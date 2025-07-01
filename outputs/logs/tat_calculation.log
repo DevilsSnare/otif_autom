@@ -487,3 +487,83 @@
 2025-07-01 16:41:39,332 - WARNING - No valid target timestamp found in stage result: 31. Dispute - PO Closing Pending
 2025-07-01 16:41:39,333 - INFO - Completed calculations with integrated delays: 5 TAT results, 5 delay analyses
 2025-07-01 16:41:39,333 - ERROR - Error in main execution: 'charmap' codec can't encode character '\U0001f4ca' in position 2: character maps to <undefined>
+2025-07-01 16:57:59,502 - INFO - Output folders created: ['outputs/tat_results', 'outputs/delay_results', 'outputs/excel_exports', 'outputs/csv_files', 'outputs/logs']
+2025-07-01 16:57:59,503 - INFO - Setting up TAT calculation environment...
+2025-07-01 16:57:59,504 - INFO - Using provided dataframe
+2025-07-01 16:57:59,512 - INFO - Converted po_created_date: object -> datetime, 0/5275 missing (0.0%)
+2025-07-01 16:57:59,520 - INFO - Converted po_approval_date: object -> datetime, 10/5275 missing (0.2%)
+2025-07-01 16:57:59,526 - INFO - Converted supplier_confirmation_date: object -> datetime, 403/5275 missing (7.6%)
+2025-07-01 16:57:59,534 - INFO - Converted pi_invoice_approval_date: object -> datetime, 1784/5275 missing (33.8%)
+2025-07-01 16:57:59,539 - INFO - Converted pi_payment_date: object -> datetime, 1785/5275 missing (33.8%)
+2025-07-01 16:57:59,547 - INFO - Converted receive_first_prd_date: object -> datetime, 1268/5275 missing (24.0%)
+2025-07-01 16:57:59,555 - INFO - Converted prd_reconfirmed_date: object -> datetime, 2334/5275 missing (44.2%)
+2025-07-01 16:57:59,561 - INFO - Converted po_im_date_value: object -> datetime, 1855/5275 missing (35.2%)
+2025-07-01 16:57:59,571 - INFO - Converted po_sm_date_value: object -> datetime, 1956/5275 missing (37.1%)
+2025-07-01 16:57:59,581 - INFO - Converted batch_created_ts: datetime64[ns, UTC] -> datetime, 2428/5275 missing (46.0%)
+2025-07-01 16:57:59,599 - INFO - Converted sm_signoff_ts: datetime64[ns, UTC] -> datetime, 2522/5275 missing (47.8%)
+2025-07-01 16:57:59,604 - INFO - Converted ci_invoice_approval_date: object -> datetime, 4498/5275 missing (85.3%)
+2025-07-01 16:57:59,611 - INFO - Converted ci_payment_date: object -> datetime, 4522/5275 missing (85.7%)
+2025-07-01 16:57:59,623 - INFO - Converted qc_schedule_date: object -> datetime, 3516/5275 missing (66.7%)
+2025-07-01 16:57:59,638 - INFO - Converted ffw_booking_ts: datetime64[ns, UTC] -> datetime, 2528/5275 missing (47.9%)
+2025-07-01 16:57:59,649 - INFO - Converted spd_ts: datetime64[ns, UTC] -> datetime, 2826/5275 missing (53.6%)
+2025-07-01 16:57:59,659 - INFO - Converted stock_pickup_date: object -> datetime, 3462/5275 missing (65.6%)
+2025-07-01 16:57:59,665 - INFO - Converted shipment_creation_date: object -> datetime, 3619/5275 missing (68.6%)
+2025-07-01 16:57:59,673 - INFO - Converted shipment_in_transit_date: object -> datetime, 3895/5275 missing (73.8%)
+2025-07-01 16:57:59,679 - INFO - Converted bi_invoice_approval_date: object -> datetime, 4177/5275 missing (79.2%)
+2025-07-01 16:57:59,688 - INFO - Converted bi_payment_date: object -> datetime, 4589/5275 missing (87.0%)
+2025-07-01 16:57:59,691 - INFO - Converted ffwp_telex_release_date: object -> datetime, 4936/5275 missing (93.6%)
+2025-07-01 16:57:59,696 - INFO - Converted shipment_stock_delivery_date: object -> datetime, 5138/5275 missing (97.4%)
+2025-07-01 16:57:59,700 - INFO - Converted item_receipt_date: object -> datetime, 5194/5275 missing (98.5%)
+2025-07-01 16:57:59,707 - INFO - Converted actual_cargo_pick_up_date: object -> datetime, 3678/5275 missing (69.7%)
+2025-07-01 16:57:59,712 - INFO - Converted actual_shipping_date: object -> datetime, 3733/5275 missing (70.8%)
+2025-07-01 16:57:59,719 - INFO - Converted actual_arrival_date: object -> datetime, 4723/5275 missing (89.5%)
+2025-07-01 16:57:59,722 - INFO - Converted actual_delivery_date: object -> datetime, 5130/5275 missing (97.3%)
+2025-07-01 16:57:59,723 - INFO - All required columns present
+2025-07-01 16:57:59,723 - INFO - Initializing TAT Calculator with config: stages_config.json
+2025-07-01 16:57:59,981 - INFO - TAT Calculator initialized with 31 stages
+2025-07-01 16:57:59,982 - INFO - TAT Calculator initialized successfully
+2025-07-01 16:57:59,982 - INFO - Setup completed successfully!
+2025-07-01 16:57:59,983 - INFO - Processing sample of 5 POs
+2025-07-01 16:57:59,983 - INFO - Using integrated delay calculation...
+2025-07-01 16:58:00,016 - INFO - Processed PO: PO356101HKGA-0000153
+2025-07-01 16:58:00,048 - INFO - Processed PO: PO356102HKGA-0000034
+2025-07-01 16:58:00,075 - INFO - Processed PO: PO359395M2B4-00040635
+2025-07-01 16:58:00,107 - INFO - Processed PO: PO359395M2B4-10002852
+2025-07-01 16:58:00,117 - ERROR - Error evaluating expression '': invalid syntax (<unknown>, line 0)
+2025-07-01 16:58:00,118 - INFO - Processed PO: PO359395M2B4-100178102
+2025-07-01 16:58:00,124 - WARNING - No valid target timestamp found in stage result: 10. PRD Confirmation Pending
+2025-07-01 16:58:00,128 - WARNING - No valid target timestamp found in stage result: 15. CI Approval Pending
+2025-07-01 16:58:00,129 - WARNING - No valid target timestamp found in stage result: 16. CI Payment Pending
+2025-07-01 16:58:00,149 - WARNING - No valid target timestamp found in stage result: 10. PRD Confirmation Pending
+2025-07-01 16:58:00,153 - WARNING - No valid target timestamp found in stage result: 15. CI Approval Pending
+2025-07-01 16:58:00,156 - WARNING - No valid target timestamp found in stage result: 16. CI Payment Pending
+2025-07-01 16:58:00,181 - WARNING - No valid target timestamp found in stage result: 10. PRD Confirmation Pending
+2025-07-01 16:58:00,195 - WARNING - No valid target timestamp found in stage result: 15. CI Approval Pending
+2025-07-01 16:58:00,199 - WARNING - No valid target timestamp found in stage result: 16. CI Payment Pending
+2025-07-01 16:58:00,224 - WARNING - No valid target timestamp found in stage result: 10. PRD Confirmation Pending
+2025-07-01 16:58:00,229 - WARNING - No valid target timestamp found in stage result: 15. CI Approval Pending
+2025-07-01 16:58:00,230 - WARNING - No valid target timestamp found in stage result: 16. CI Payment Pending
+2025-07-01 16:58:00,255 - WARNING - No valid target timestamp found in stage result: 10. PRD Confirmation Pending
+2025-07-01 16:58:00,256 - WARNING - No valid target timestamp found in stage result: 11. IM Sign-Off Pending
+2025-07-01 16:58:00,256 - WARNING - No valid target timestamp found in stage result: 12. Ready for Batching Pending
+2025-07-01 16:58:00,257 - WARNING - No valid target timestamp found in stage result: 13. Batch Creation Pending
+2025-07-01 16:58:00,258 - WARNING - No valid target timestamp found in stage result: 14. SM Sign-Off Pending
+2025-07-01 16:58:00,258 - WARNING - No valid target timestamp found in stage result: 15. CI Approval Pending
+2025-07-01 16:58:00,259 - WARNING - No valid target timestamp found in stage result: 16. CI Payment Pending
+2025-07-01 16:58:00,259 - WARNING - No valid target timestamp found in stage result: 17. QC Schedule Pending
+2025-07-01 16:58:00,259 - WARNING - No valid target timestamp found in stage result: 18. FFW Booking Missing
+2025-07-01 16:58:00,260 - WARNING - No valid target timestamp found in stage result: 19. Supplier Pickup Date Pending
+2025-07-01 16:58:00,261 - WARNING - No valid target timestamp found in stage result: 20. Pre Pickup Check
+2025-07-01 16:58:00,261 - WARNING - No valid target timestamp found in stage result: 21. FOB Pickup Pending
+2025-07-01 16:58:00,262 - WARNING - No valid target timestamp found in stage result: 22. Non FOB Pickup Pending
+2025-07-01 16:58:00,262 - WARNING - No valid target timestamp found in stage result: 23. INB Creation Pending
+2025-07-01 16:58:00,263 - WARNING - No valid target timestamp found in stage result: 24. Mark In-Transit Pending
+2025-07-01 16:58:00,264 - WARNING - No valid target timestamp found in stage result: 25. BL Approval Pending
+2025-07-01 16:58:00,264 - WARNING - No valid target timestamp found in stage result: 26. BL Payment Pending - In Transit
+2025-07-01 16:58:00,265 - WARNING - No valid target timestamp found in stage result: 27. BL Payment Pending - Arrived
+2025-07-01 16:58:00,265 - WARNING - No valid target timestamp found in stage result: 28. Telex Release Pending
+2025-07-01 16:58:00,266 - WARNING - No valid target timestamp found in stage result: 29. Stock Delivery Pending
+2025-07-01 16:58:00,266 - WARNING - No valid target timestamp found in stage result: 30. Stock Receiving Pending
+2025-07-01 16:58:00,267 - WARNING - No valid target timestamp found in stage result: 31. Dispute - PO Closing Pending
+2025-07-01 16:58:00,268 - INFO - Completed calculations with integrated delays: 5 TAT results, 5 delay analyses
+2025-07-01 16:58:00,268 - ERROR - Error in main execution: 'charmap' codec can't encode character '\U0001f4ca' in position 2: character maps to <undefined>
