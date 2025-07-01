@@ -91,14 +91,6 @@ def main(creds):
     root_url = "https://razrgroup.sharepoint.com/sites/Razor"
     relative_url = "/sites/Razor/Shared Documents/Chetan_Locale/Procurement Trackers/Temporary/"
 
-    ## FF E2E Tracker V3
-    ffw_status = fetch_from_sharepoint(root_url, relative_url, "FF E2E Tracker_V3.xlsx", "Main Sheet") ## pending
-    ffw_status.columns = ffw_status.iloc[0]
-    ffw_status = ffw_status[1:].reset_index(drop=True)
-    ffw_status = ffw_status.rename(columns={"SubStatus": "SubStatus.1"})
-    ffw_status = ffw_status[["Batch ID", "High level stage", "Batch milestone (Automatic)", "Blocker Reason"]]
-    ffw_status = ffw_status[ffw_status["Batch ID"].notna() & (ffw_status["Batch ID"] != "")]
-    ffw_status["Final Blocker Reason"] = ffw_status["Batch milestone (Automatic)"].apply(lambda x: "No FFW Comment Mentioned" if x == "" else x)
 
     ## Razor Mohawk Tracker 0224
     fob_date = fetch_from_sharepoint(root_url, relative_url, "Razor Mohawk Tracker_0224.xlsx", "FOB CN-US") ## pending
@@ -171,6 +163,15 @@ def main(creds):
         else ("No Compliance Blocker Mentioned" if row["Blocker Status"] != "" else row["Blocker Status"]),
         axis=1
     )
+
+    ## FF E2E Tracker V3
+    ffw_status = fetch_from_sharepoint(root_url, relative_url, "FF E2E Tracker_V3.xlsx", "Main Sheet") ## pending
+    ffw_status.columns = ffw_status.iloc[0]
+    ffw_status = ffw_status[1:].reset_index(drop=True)
+    ffw_status = ffw_status.rename(columns={"SubStatus": "SubStatus.1"})
+    ffw_status = ffw_status[["Batch ID", "High level stage", "Batch milestone (Automatic)", "Blocker Reason"]]
+    ffw_status = ffw_status[ffw_status["Batch ID"].notna() & (ffw_status["Batch ID"] != "")]
+    ffw_status["Final Blocker Reason"] = ffw_status["Batch milestone (Automatic)"].apply(lambda x: "No FFW Comment Mentioned" if x == "" else x)
 
     ## -------------------------------------------------------------------------------------------------------------------- ##
 

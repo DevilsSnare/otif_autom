@@ -381,7 +381,7 @@ class TATRunner:
         print(f"   Worst delay: {max_delay} days ({worst_po})")
 
 
-def main(final_df):
+def main(final_df=None):
     """Main execution function"""
     print("TAT Calculation System with Stage-Level Analysis - Starting...")
     print("=" * 70)
@@ -449,6 +449,8 @@ def main(final_df):
                 print(f"   ")
                 print(f"   Tab 2: timestamps (calculated)")
                 print(f"   Tab 3: delay_days (difference analysis)")
+
+                return stage_level_file
             
         print(f"\nTo process all POs, change sample_size=None in the run_calculations() call")
         print("TAT Calculation with stage-level analysis completed successfully!")
@@ -457,8 +459,6 @@ def main(final_df):
         logger.error(f"Error in main execution: {e}")
         print(f"Error: {e}")
         print(" See outputs/logs/tat_calculation.log for detailed error information")
-
-    return stage_level_file
 
 # if __name__ == "__main__":
 #     main()
