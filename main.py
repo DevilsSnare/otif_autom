@@ -403,6 +403,9 @@ def main(dfs_tables, dfs_excels):
 
     final_df['FFW Telex Status'] = final_df.apply(func_supplier_telex_status, axis=1).fillna("Not in INB Sheet")
 
+    final_df['Vendor ID'] = pd.to_numeric(final_df['Vendor ID'], errors='coerce').astype('Int64')
+    cm_sm_vendor_mapping['Vendor ID'] = pd.to_numeric(final_df['Vendor ID'], errors='coerce').astype('Int64')
+
     final_df['CM'] = final_df['Vendor ID'].map(cm_sm_vendor_mapping.drop_duplicates(subset="Vendor ID", keep="first").set_index('Vendor ID')['CM']).fillna("")
     final_df['SM'] = final_df['Vendor ID'].map(cm_sm_vendor_mapping.drop_duplicates(subset="Vendor ID", keep="first").set_index('Vendor ID')['SM']).fillna("")
 

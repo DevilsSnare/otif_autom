@@ -165,13 +165,21 @@ def main(creds):
     )
 
     ## FF E2E Tracker V3
-    ffw_status = fetch_from_sharepoint(root_url, relative_url, "FF E2E Tracker_V3.xlsx", "Main Sheet") ## pending
-    ffw_status.columns = ffw_status.iloc[0]
-    ffw_status = ffw_status[1:].reset_index(drop=True)
-    ffw_status = ffw_status.rename(columns={"SubStatus": "SubStatus.1"})
-    ffw_status = ffw_status[["Batch ID", "High level stage", "Batch milestone (Automatic)", "Blocker Reason"]]
-    ffw_status = ffw_status[ffw_status["Batch ID"].notna() & (ffw_status["Batch ID"] != "")]
-    ffw_status["Final Blocker Reason"] = ffw_status["Batch milestone (Automatic)"].apply(lambda x: "No FFW Comment Mentioned" if x == "" else x)
+    for attempt in range(3):
+        try:
+            ffw_status = fetch_from_sharepoint(root_url, relative_url, "FF E2E Tracker_V3.xlsx", "Main Sheet") ## pending
+            ffw_status.columns = ffw_status.iloc[0]
+            ffw_status = ffw_status[1:].reset_index(drop=True)
+            ffw_status = ffw_status.rename(columns={"SubStatus": "SubStatus.1"})
+            ffw_status = ffw_status[["Batch ID", "High level stage", "Batch milestone (Automatic)", "Blocker Reason"]]
+            ffw_status = ffw_status[ffw_status["Batch ID"].notna() & (ffw_status["Batch ID"] != "")]
+            ffw_status["Final Blocker Reason"] = ffw_status["Batch milestone (Automatic)"].apply(lambda x: "No FFW Comment Mentioned" if x == "" else x)
+            break
+        except Exception as e:
+            if attempt < 2:
+                time.sleep(5)
+            else:
+                raise
 
     ## -------------------------------------------------------------------------------------------------------------------- ##
 

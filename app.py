@@ -1,6 +1,6 @@
 from imports import *
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
-from ingestion_tables import main as ingestion_tables_main
+from ingestion_tables_multithreading import main as ingestion_tables_main
 from ingestion_excels import main as ingestion_excels_main
 from main import main as cal_main
 from dod import main as dod_main
