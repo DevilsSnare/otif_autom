@@ -46,72 +46,72 @@ def fetch_from_redshift(user_id, password, database, host, port, sql_query):
     return df
 
 po_sql_query = """
-    WITH RankedData AS (
-        SELECT 
-            *, 
+    WITH POData AS (
+        SELECT
+            *,
+            DENSE_RANK() OVER (
+                PARTITION BY CONCAT(document_number, line_id)
+                ORDER BY snapshot_datetime DESC
+            ) AS PORank
+        FROM razor_db.netsuite.otif_purchase_order_line_items_with_key
+    ),
+    RankedData AS (
+        SELECT
+            *,
             ROW_NUMBER() OVER (
-                PARTITION BY CONCAT(document_number, line_id) 
+                PARTITION BY CONCAT(document_number, line_id)
                 ORDER BY snapshot_datetime DESC
             ) AS row_num
-        FROM (
-            SELECT 
-                *, 
-                DENSE_RANK() OVER (
-                    PARTITION BY CONCAT(document_number, line_id) 
-                    ORDER BY snapshot_datetime DESC
-                ) AS PORank
-            FROM razor_db.public.rgbit_netsuite_purchase_orders_lineitems_withkey
-        ) AS POData
+        FROM POData
         WHERE 
             final_status NOT IN ('Closed', 'Legacy Closed', 'Fully Billed')
             AND PORank = 1
             AND (quantity - "quantity_fulfilled/received") > 0
             AND (scm_po_scm_memo IS NULL OR scm_po_scm_memo != 'import_ic_flow')
     )
-    SELECT 
-        id, 
-        TO_DATE(date_created, 'DD.MM.YYYY HH24:MI') AS date_created, 
+    SELECT
+        id,
+        TO_DATE(date_created, 'DD.MM.YYYY HH24:MI') AS date_created,
         document_number,
-        subsidiary_no_hierarchy, 
-        scm_associated_brands, 
-        po_vendor, 
+        subsidiary_no_hierarchy,
+        scm_associated_brands,
+        po_vendor,
         supplier_confirmation_status,
-        final_status, 
-        scm_po_scm_memo, 
-        marketplace_header, 
-        supplier_payment_terms, 
+        final_status,
+        scm_po_scm_memo,
+        marketplace_header,
+        supplier_payment_terms,
         incoterms,
-        line_id, 
-        item, 
-        asin, 
-        quantity, 
-        "quantity_fulfilled/received", 
-        quantity_on_shipments, 
+        line_id,
+        item,
+        asin,
+        quantity,
+        "quantity_fulfilled/received",
+        quantity_on_shipments,
         quantity_billed,
-        item_rate, 
-        currency, 
-        item_rate_eur, 
-        amount_foreign_currency, 
+        item_rate,
+        currency,
+        item_rate_eur,
+        amount_foreign_currency,
         TO_DATE(first_prd, 'DD.MM.YYYY') AS first_prd,
-        prd, 
-        planned_prd, 
-        TO_DATE(accepted_prd, 'DD.MM.YYYY') AS accepted_prd, 
-        prd_status, 
+        prd,
+        planned_prd,
+        TO_DATE(accepted_prd, 'DD.MM.YYYY') AS accepted_prd,
+        prd_status,
         confirmed_crd,
-        quality_control_date, 
-        quality_control_status, 
-        im_line_signoff, 
-        sm_line_signoff, 
+        quality_control_date,
+        quality_control_status,
+        im_line_signoff,
+        sm_line_signoff,
         production_status,
-        batch_id, 
-        wh_type, 
-        "considered_for_anti-po", 
-        prd_reconfirmation, 
+        batch_id,
+        wh_type,
+        "considered_for_anti-po",
+        prd_reconfirmation,
         prd_change_reason,
-        invoice_number, 
-        invoice_status, 
-        "historical_anti-po",
-        snapshot_datetime
+        invoice_number,
+        invoice_status,
+        "historical_anti-po"
     FROM RankedData
     WHERE row_num = 1;
     """ 
