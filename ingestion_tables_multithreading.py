@@ -66,7 +66,7 @@ po_sql_query = """
         WHERE 
             final_status NOT IN ('Closed', 'Legacy Closed', 'Fully Billed')
             AND PORank = 1
-            AND (quantity - 'quantity_fulfilled/received') > 0
+            AND (quantity - "quantity_fulfilled/received") > 0
             AND (scm_po_scm_memo IS NULL OR scm_po_scm_memo != 'import_ic_flow')
     )
     SELECT
