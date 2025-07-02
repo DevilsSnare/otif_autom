@@ -79,7 +79,7 @@ def main(creds):
             break
         except Exception as e:
             if attempt < 2:
-                print(f'FFW Reporting failed, starting try num: {attempt+1}')
+                print(f'\nFFW Reporting failed, starting try num: {attempt+2}')
                 time.sleep(5)
             else:
                 raise
@@ -207,7 +207,6 @@ def main(creds):
     cprd = cprd[cprd["po_razin_id"].notna() & (cprd["po_razin_id"] != "")]
     cprd['Final Status'] = cprd['Standard Comments'].apply(lambda x: "No CPRD Blocker Mentioned" if x=="" else x)
 
-    ## -------------------------------------------------------------------------------------------------------------------- ##
 
     ## Pending Pickup Tracker - SPD
     sheet_name = f"SPD - {today.day:02d}.{today.month:02d}.{today.year}"
@@ -261,6 +260,16 @@ def main(creds):
     g4 = g4[g4["batch_id"].notna() & (g4["batch_id"] != "")]
     g4["Final Status"] = g4["Final Dispute/Blocker"].apply(lambda x: "No G4 Blocker Mentioned" if pd.isna(x) or x == "" or x==" " or x == 0 else x) 
 
+    ## -------------------------------------------------------------------------------------------------------------------- ##
+
+    root_url = "https://razrgroup.sharepoint.com/sites/Razor"
+    relative_url = "/sites/Razor/Shared Documents/Chetan_Locale/Shipping_Orders/"
+
+    ## Booking Form Data
+    booking_form_data = fetch_from_sharepoint(root_url, relative_url, "BookingForm_GeneralTracker.xlsx", "Sent") ## pending
+    booking_form_data = booking_form_data[["Batch Id", "Date - Sent", "Status"]].drop_duplicates(subset="Batch Id", keep="last")
+    booking_form_data = booking_form_data[booking_form_data["Batch Id"].notna() & (booking_form_data["Batch Id"] != "")]
+
 
     ## Compliance Hubspot -- will be a table now -- will remove the below ingestion
     # comp = fetch_from_sharepoint(root_url, relative_url, "all-deals.xlsx", "all-deals")
@@ -297,6 +306,7 @@ def main(creds):
         'g2': g2,
         'g4': g4,
         'qc': qc,
-        'compliance': compliance
+        'compliance': compliance,
+        'booking_form_data': booking_form_data
     }
 

@@ -115,13 +115,13 @@ class SharepointClient:
 
     def fetch_sharepoint_excel_large_files(self, relative_url, sheet_name):
         url = f"{self.root}/_api/web/GetFileByServerRelativeUrl('{relative_url}')/$value"
-        response = self.session.get(url, stream=True, timeout=300)
+        response = self.session.get(url, stream=True, timeout=600)
 
         if response.status_code != 200:
             raise Exception(f"Download failed: {response.status_code} - {response.text}")
 
         with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as tmp_file:
-            for chunk in response.iter_content(chunk_size=1024 * 1024):  # 1 MB
+            for chunk in response.iter_content(chunk_size=5 * 1024 * 1024):  # 5 MB
                 tmp_file.write(chunk)
             tmp_file_path = tmp_file.name
 

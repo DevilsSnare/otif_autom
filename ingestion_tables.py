@@ -173,6 +173,7 @@ batch_sql_query = """
     MAX(BatchData.scrd_delay_reasons) AS scrd_delay_reasons,
     MAX(BatchData.ccrd_by_freight) AS ccrd_by_freight,
     MAX(BatchData.expected_pickup_date) AS expected_pickup_date,
+    Max(BatchData.cfs_cut_off) as cfs_cut_off,
     MAX(BatchData.actual_pickup_date) AS actual_pickup_date,
     MAX(BatchData.gate_in_date) AS gate_in_date,
     MAX(BatchData.expected_shipping_date) AS expected_shipping_date,
