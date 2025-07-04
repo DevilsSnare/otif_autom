@@ -10,6 +10,11 @@ def main(final_df):
 
     dod = pd.read_excel(f'{dod_df}', sheet_name='delay_days')
 
+    dod['A. Anti PO Line'] = 0
+    dod['B. Compliance Blocked'] = 0
+    dod['C. Shipped'] = 0
+    dod['D. Master Data Blocker'] = 0
+
     dod['Current Status'] = dod['PO_ID'].map(final_df.set_index('po_razin_id')['Current Status']).fillna("")
 
     columns = [
@@ -35,19 +40,19 @@ def main(final_df):
     dod['Days'] = dod.apply(max_status_value, axis=1)
 
     def categorize_days(days):
-        if days <= 2:
-            return "01-02"
-        elif days <= 5:
-            return "03-05"
-        elif days <= 9:
-            return "06-09"
-        elif days <= 17:
-            return "10-17"
+        if days == "On-Track":
+            return "On-Track"
+        elif days <= 3:
+            return "01-03"
+        elif days <= 8:
+            return "04-08"
+        elif days <= 15:
+            return "09-15"
         else:
-            return "17+"
+            return "15+"
 
     dod['Days Bucket'] = dod['Days'].apply(categorize_days)
 
-    final_df['Days Bucket'] = final_df['po_razin_id'].map(dod.set_index('PO_ID')['Days Bucket']).fillna("")
+    final_df['Days Bucket'] = final_df['po_razin_id'].map(dod.drop_duplicates(subset="PO_ID", keep="first").set_index('PO_ID')['Days Bucket']).fillna("")
 
     return final_df

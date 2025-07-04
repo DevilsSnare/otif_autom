@@ -22,67 +22,92 @@ def main(creds):
 
     today = datetime.now()
 
-    file_path = "static/default_mappings.xlsx"
-    status_mapping = pd.read_excel(
-        file_path,
-        sheet_name="Status",
-        engine="openpyxl"
-    )
-    blockers_mapping = pd.read_excel(
-        file_path,
-        sheet_name="Blockers",
-        engine="openpyxl"
-    )
-    payment_terms_mapping = pd.read_excel(
-        file_path,
-        sheet_name="Payment Terms",
-        engine="openpyxl"
-    )
-    cm_sm_vendor_mapping = pd.read_excel(
-        file_path,
-        sheet_name="CM-SM-Vendor",
-        engine="openpyxl"
-    )
-    memo_mapping = pd.read_excel(
-        file_path,
-        sheet_name="Memo-Summary",
-        engine="openpyxl"
-    )
-    team_priority_mapping = pd.read_excel(
-        file_path,
-        sheet_name="Team-Priority",
-        engine="openpyxl"
-    )
-    asin_priority_mapping = pd.read_excel(
-        file_path,
-        sheet_name="ASIN-Priority",
-        engine="openpyxl"
-    )
-    asin_static_payment_status = pd.read_csv("static/asin_static_payment_status.csv")
+    # file_path = "static/default_mappings.xlsx"
+    # status_mapping = pd.read_excel(
+    #     file_path,
+    #     sheet_name="Status",
+    #     engine="openpyxl"
+    # )
+    # blockers_mapping = pd.read_excel(
+    #     file_path,
+    #     sheet_name="Blockers",
+    #     engine="openpyxl"
+    # )
+    # payment_terms_mapping = pd.read_excel(
+    #     file_path,
+    #     sheet_name="Payment Terms",
+    #     engine="openpyxl"
+    # )
+    # cm_sm_vendor_mapping = pd.read_excel(
+    #     file_path,
+    #     sheet_name="CM-SM-Vendor",
+    #     engine="openpyxl"
+    # )
+    # memo_mapping = pd.read_excel(
+    #     file_path,
+    #     sheet_name="Memo-Summary",
+    #     engine="openpyxl"
+    # )
+    # team_priority_mapping = pd.read_excel(
+    #     file_path,
+    #     sheet_name="Team-Priority",
+    #     engine="openpyxl"
+    # )
+    # asin_priority_mapping = pd.read_excel(
+    #     file_path,
+    #     sheet_name="ASIN-Priority",
+    #     engine="openpyxl"
+    # )
+    # asin_static_payment_status = pd.read_csv("static/asin_static_payment_status.csv")
+
+    root_url = "https://razrgroup.sharepoint.com/sites/Razor"
+    relative_url = "/sites/Razor/Shared Documents/Chetan_Locale/Procurement Trackers/Manually_Updated/Static Mappings/"
+
+    status_mapping = fetch_from_sharepoint(root_url, relative_url, "default_mappings.xlsx", "Status")
+    blockers_mapping = fetch_from_sharepoint(root_url, relative_url, "default_mappings.xlsx", "Blockers")
+    payment_terms_mapping = fetch_from_sharepoint(root_url, relative_url, "default_mappings.xlsx", "Payment Terms")
+    cm_sm_vendor_mapping = fetch_from_sharepoint(root_url, relative_url, "default_mappings.xlsx", "CM-SM-Vendor")
+    memo_mapping = fetch_from_sharepoint(root_url, relative_url, "default_mappings.xlsx", "Memo-Summary")
+    team_priority_mapping = fetch_from_sharepoint(root_url, relative_url, "default_mappings.xlsx", "Team-Priority")
+    asin_priority_mapping = fetch_from_sharepoint(root_url, relative_url, "default_mappings.xlsx", "ASIN-Priority")
+
+    asin_static_payment_status = fetch_from_sharepoint(root_url, relative_url, "asin_static_payment_status.xlsx", "asin_static_payment_status")
+
    
 
     ## ------------------------------------- FREIGEGEBENE DOKUMENTE / FREIGHT OPERATIONS ------------------------------------- ##
 
     ## FFW Reporting
-    root_url = "https://razrgroup.sharepoint.com/teams/logistics-group"
-    relative_url = "/teams/logistics-group/Freigegebene%20Dokumente/Freight%20Operations/"
+    # root_url = "https://razrgroup.sharepoint.com/teams/logistics-group"
+    # relative_url = "/teams/logistics-group/Freigegebene%20Dokumente/Freight%20Operations/"
 
-    for attempt in range(3):
-        try:
-            telex_ffw = fetch_from_sharepoint_excel_large_files(root_url, relative_url, "FFW Reporting.xlsx", "INBSHIP Level")
-            telex_ffw = telex_ffw[["Shipment Number", "Telex Released/Not Released", "Standard Remarks"]]
-            telex_ffw = telex_ffw[telex_ffw["Shipment Number"].notna() & (telex_ffw["Shipment Number"] != "")]
-            telex_ffw['Final Status'] = telex_ffw['Telex Released/Not Released'].str.strip()
-            telex_ffw['Final Blocker Status'] = telex_ffw['Standard Remarks'].apply(
-                lambda x: "No FFW Telex Blocker Mentioned" if x == "" else x
-            )
-            break
-        except Exception as e:
-            if attempt < 2:
-                print(f'\nFFW Reporting failed, starting try num: {attempt+2}')
-                time.sleep(5)
-            else:
-                raise
+    # for attempt in range(3):
+    #     try:
+    #         telex_ffw = fetch_from_sharepoint_excel_large_files(root_url, relative_url, "FFW Reporting.xlsx", "INBSHIP Level")
+    #         telex_ffw = telex_ffw[["Shipment Number", "Telex Released/Not Released", "Standard Remarks"]]
+    #         telex_ffw = telex_ffw[telex_ffw["Shipment Number"].notna() & (telex_ffw["Shipment Number"] != "")]
+    #         telex_ffw['Final Status'] = telex_ffw['Telex Released/Not Released'].str.strip()
+    #         telex_ffw['Final Blocker Status'] = telex_ffw['Standard Remarks'].apply(
+    #             lambda x: "No FFW Telex Blocker Mentioned" if x == "" else x
+    #         )
+    #         break
+    #     except Exception as e:
+    #         if attempt < 2:
+    #             print(f'\nFFW Reporting failed, starting try num: {attempt+2}')
+    #             time.sleep(5)
+    #         else:
+    #             raise
+    
+    root_url = "https://razrgroup.sharepoint.com/sites/Razor"
+    relative_url = "/sites/Razor/Shared Documents/Chetan_Locale/Procurement Trackers/Temporary/"
+
+    telex_ffw = fetch_from_sharepoint_excel_large_files(root_url, relative_url, "FFW Reporting.xlsx", "INBSHIP Level")
+    telex_ffw = telex_ffw[["Shipment Number", "Telex Released/Not Released", "Standard Remarks"]]
+    telex_ffw = telex_ffw[telex_ffw["Shipment Number"].notna() & (telex_ffw["Shipment Number"] != "")]
+    telex_ffw['Final Status'] = telex_ffw['Telex Released/Not Released'].str.strip()
+    telex_ffw['Final Blocker Status'] = telex_ffw['Standard Remarks'].apply(
+        lambda x: "No FFW Telex Blocker Mentioned" if x == "" else x
+    )
 
     ## -------------------------------------------------------------------------------------------------------------------- ##
 

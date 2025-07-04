@@ -771,5 +771,14 @@ def main(creds):
         results['compliance_hubspot']["RAZIN&MP"] = results['compliance_hubspot']["razin"].astype(str).str.strip() + results['compliance_hubspot']["Final MP"].astype(str)
         results['compliance_hubspot']["Vendor Code"] = results['compliance_hubspot']["compliance_status"].str.extract(r"^(\S+)", expand=False).fillna("")
         results['compliance_hubspot']["RAZIN&MP&Vendor"] = results['compliance_hubspot']["marketplace"] + results['compliance_hubspot']["compliance_status"]
+
+    if ('dod_data' in results and not results['dod_data'].empty) and ('po_data' in results and not results['po_data'].empty):
+        results['po_data']['po_razin_idx'] = (
+            results['po_data']['document_number'].astype(str).str.strip() +
+            results['po_data']['item'].astype(str).str.strip() +
+            results['po_data']['line_id'].astype(str).str.strip()
+        )
+        valid_po_ids = set(results['po_data']['po_razin_idx'])
+        results['dod_data'] = results['dod_data'][results['dod_data']['po_razin_id'].isin(valid_po_ids)]
     
     return results
