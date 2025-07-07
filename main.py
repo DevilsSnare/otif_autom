@@ -1,6 +1,8 @@
 from imports import *
 
 def main(dfs_tables, dfs_excels):
+    # final_df = cal_main(dfs_tables, dfs_excels)
+
     po_data = dfs_tables['po_data']
     pl_data = dfs_tables['pl_data']
     batch_data = dfs_tables['batch_data']
@@ -39,14 +41,18 @@ def main(dfs_tables, dfs_excels):
     compliance = dfs_excels['compliance']
     booking_form_data = dfs_excels['booking_form_data']
 
+    po_data["document_number"] = po_data["document_number"].fillna("")
+    po_data["asin"] = po_data["asin"].fillna("")
+    po_data["item"] = po_data["item"].fillna("")
+
 
     final_df = po_data.copy()
 
     final_df['Vendor ID'] = final_df['po_vendor'].str.split(" ").str[0]
     final_df['Placement Batch'] = final_df['scm_po_scm_memo'].map(memo_mapping.set_index("Memo (Main)")["Summary Filter"]).fillna("Other")
-    final_df["MP"] = final_df["marketplace_header"].apply(lambda x: "LATAM" if x=="CO" or x=="MX" or x=="BR" else x)
+    final_df["MP"] = final_df["marketplace_header"].apply(lambda x: "LATAM" if x in ["CO", "MX", "BR"] else x)
 
-    final_df["Pending Units"] = final_df["quantity"].astype(int) - final_df["quantity_fulfilled/received"].astype(int)
+    final_df["Pending Units"] = final_df["quantity"].fillna(0).astype(int) - final_df["quantity_fulfilled/received"].fillna(0).astype(int)
 
     final_df["Pending Value"] = final_df["item_rate_eur"]*final_df["Pending Units"]
 
@@ -60,16 +66,15 @@ def main(dfs_tables, dfs_excels):
     final_df['accepted_prd'] = pd.to_datetime(final_df['accepted_prd'], errors='coerce')
 
     def prd_delay_decision(row):
-        if (pd.notna(row['planned_prd']) or row['planned_prd']!="") and (pd.notna(row['first_prd']) or row['first_prd']!="") and row['first_prd'] <= row['planned_prd'] + pd.Timedelta(days=7):
+        if (pd.notna(row['planned_prd']) or row['planned_prd']!="") and (pd.notna(row['first_prd']) and row['first_prd']!="") and row['first_prd'] <= row['planned_prd'] + pd.Timedelta(days=7):
             return "No Delay"
         if row['prd_status'] in ["Auto-approved", "Approved by IM"] or pd.isna(row['first_prd']):
             return "Agreed"
-        if (pd.notna(row['accepted_prd']) or row['accepted_prd']!="") and (pd.notna(row['prd']) or row['prd']!="") and row['prd'] <= row['accepted_prd'] + pd.Timedelta(days=7):
+        if (pd.notna(row['accepted_prd']) or row['accepted_prd']!="") and (pd.notna(row['prd']) and row['prd']!="") and row['prd'] <= row['accepted_prd'] + pd.Timedelta(days=7):
             return "Agreed"
         return "SM Action Pending"
 
     final_df["PRD Delay Decision"] = final_df.apply(prd_delay_decision, axis=1)
-
 
     final_df["po_razin"] = final_df["document_number"].astype(str) + final_df["item"].astype(str)
     final_df["po_razin_id"] = final_df["document_number"].astype(str) + final_df["item"].astype(str) + final_df["line_id"].astype(str)
@@ -82,7 +87,7 @@ def main(dfs_tables, dfs_excels):
     ], ignore_index=True).drop_duplicates(subset='document_number', keep='first')
     final_df['NS PI Status'] = final_df['document_number'].map(merged_df.set_index("document_number")["status"]).fillna("Not Submitted")
 
-    final_df['VP PI Status'] = final_df['document_number'].map(pi_data.drop_duplicates(subset="PO#", keep="first").set_index("PO#")["status"]).fillna("03. PI Upload Pending") 
+    final_df['VP PI Status'] = final_df['document_number'].map(pi_data[["PO#", "status"]].drop_duplicates(subset="PO#", keep="first").set_index("PO#")["status"]).fillna("03. PI Upload Pending") 
 
     final_df["PI Payment Status"] = final_df['document_number'].map(payrun[['PO No.', 'Status']].rename(columns={'PO No.': 'document_number'}).drop_duplicates(subset='document_number', keep='first').set_index("document_number")["Status"]).fillna("Not In Payment Sheet") 
 
@@ -104,7 +109,7 @@ def main(dfs_tables, dfs_excels):
 
     final_df['Line Payment Type'] = final_df.apply(
         lambda row: "PI" if (row['PI']==100)
-        else ("CI" if row['PI']+row['CI']==100 else ("BL" if row['PI']+row['BL']==100 else "CI")),
+        else ("CI" if row['PI']+row['CI']==100 else ("BL" if row['PI']+row['BL']==100 else "BL")),
         axis=1
     )
 
@@ -120,7 +125,7 @@ def main(dfs_tables, dfs_excels):
 
     final_df['Batch Payment Type'] = final_df.apply(lambda row: func_batch_payment_type(row, final_df), axis=1)
 
-    final_df['INB#'] = final_df['po_razin_id'].map(inb_data.drop_duplicates(subset="PO&RAZIN&ID", keep="first").set_index('PO&RAZIN&ID')['shipment_number']).fillna("")
+    final_df['INB#'] = final_df['po_razin_id'].map(inb_data[['PO&RAZIN&ID', 'shipment_number']].drop_duplicates(subset="PO&RAZIN&ID", keep="first").set_index('PO&RAZIN&ID')['shipment_number']).fillna("")
 
     def func_inb_payment_type(row, po_data):
         if pd.isna(row['INB#']) or row['INB#']=="":
@@ -194,15 +199,14 @@ def main(dfs_tables, dfs_excels):
 
     final_df['INB Payment Status'] = final_df.apply(lambda row: func_inb_payment_status(row, final_df), axis=1)
 
-    final_df['Line Payment Approval Status'] = final_df['invoice_number'].map(payrun[['Inv#', 'Status']].drop_duplicates(subset='Inv#', keep='first').set_index("Inv#")["Status"]).fillna(final_df['Line Payment Status'].apply(lambda x: "Pay" if x=="Paid" else "Not in Payment Sheet"))
+    final_df['Line Payment Approval Status'] = final_df['invoice_number'].map(payrun[['Inv#', 'Status']].drop_duplicates(subset='Inv#', keep='first').set_index("Inv#")["Status"]).fillna(final_df['Line Payment Status'].apply(lambda x: "Pay" if x=="Paid" else "Not In Payment Sheet"))
 
     def func_batch_payment_approval_status(row, po_data):
+        filtered = po_data[po_data['batch_id'] == row['batch_id']]['Line Payment Approval Status']
+
         if pd.isna(row['batch_id'])  or row['batch_id']=="":
             return row['Line Payment Approval Status']
-        
-        filtered = po_data[po_data['batch_id'] == row['batch_id']]['Line Payment Approval Status']
-        
-        if (filtered == 'Reject').any():
+        elif (filtered == 'Reject').any():
             return 'Reject'
         elif (filtered == 'Not In Payment Sheet').any():
             return 'Not In Payment Sheet'
@@ -214,12 +218,11 @@ def main(dfs_tables, dfs_excels):
     final_df['Batch Payment Approval Status'] = final_df.apply(lambda row: func_batch_payment_approval_status(row, final_df), axis=1)
 
     def func_inb_payment_approval_status(row, po_data):
+        filtered = po_data[po_data["INB#"] == row["INB#"]]["Line Payment Approval Status"]
+
         if pd.isna(row["INB#"]) or row['INB#']=="":
             return row["Line Payment Approval Status"]
-        
-        filtered = po_data[po_data["INB#"] == row["INB#"]]["Line Payment Approval Status"]
-        
-        if (filtered == "Reject").any():
+        elif (filtered == "Reject").any():
             return "Reject"
         elif (filtered == "Not In Payment Sheet").any():
             return "Not In Payment Sheet"
@@ -236,11 +239,15 @@ def main(dfs_tables, dfs_excels):
     final_df["Batch Sign-Off"] = final_df["batch_id"].map(pl_data.drop_duplicates(subset="batch_id", keep="first").set_index("batch_id")["final_status"]).fillna("14a. Documents Missing")
 
     final_df["QC Stage"] = pd.to_numeric(final_df['quality_control_status'].astype(str).str[0], errors='coerce').fillna(1).astype(int)
-    final_df["QC Pending"] = final_df["QC Stage"].apply(lambda x: "No" if x==3 or x==6 else "Yes")
+    final_df["QC Pending"] = final_df["QC Stage"].apply(lambda x: "No" if x in [3, 6] else "Yes")
 
     def func_batch_qc_pending(row, po_data):
-        filtered = po_data[po_data['batch_id'] == row['batch_id']]['QC Pending']
-        if (filtered == 'Yes').any():
+        batch_id = row['batch_id']
+        filtered = po_data[po_data['batch_id'] == batch_id]['QC Pending']
+
+        if pd.isna(batch_id) or batch_id=="" :
+            return 'Yes'
+        elif (filtered == 'Yes').any():
             return 'Yes'
         else:
             return row['QC Pending']
@@ -256,24 +263,27 @@ def main(dfs_tables, dfs_excels):
         qc_dates = po_data.loc[po_data['batch_id'] == row['batch_id'], 'quality_control_date']
         max_date = qc_dates.max()
 
-        if pd.notna(max_date):
+        if isinstance(max_date, pd.Timestamp):
             return qc_dates.max()
         else:
             return 'Not Scheduled'
 
-    final_df['Max QC Date'] = final_df.apply(lambda row: func_max_qc_date(row, po_data), axis=1)
+    final_df['Max QC Date'] = final_df.apply(lambda row: func_max_qc_date(row, final_df), axis=1)
+    # final_df['Max QC Date'] = pd.to_datetime(final_df['Max QC Date'], errors='coerce')
+    final_df['Max QC Date'] = final_df['Max QC Date'].apply(
+        lambda x: pd.to_datetime(x) if str(x) not in ['No Batch', 'Not Scheduled'] else x
+    )
 
     final_df['Actual pick-up date'] = final_df['batch_id'].map(batch_data.set_index("batch_id")["actual_pickup_date"]).fillna("")
     final_df['Gate In Date'] = final_df['batch_id'].map(batch_data.set_index("batch_id")["gate_in_date"]).fillna("")
     final_df['Actual Shipping Date'] = final_df['batch_id'].map(batch_data.set_index("batch_id")["actual_shipping_date"]).fillna("")
 
-    final_df['Status'] = final_df['po_razin_id'].map(inb_data.drop_duplicates(subset="PO&RAZIN&ID", keep="first").set_index('PO&RAZIN&ID')['status']).fillna("")
-    final_df['Actual Pickup'] = final_df['po_razin_id'].map(inb_data.drop_duplicates(subset="PO&RAZIN&ID", keep="first").set_index('PO&RAZIN&ID')['actual_cargo_pick_up_date']).fillna("")
-    final_df['Actual Shipping Date3'] = final_df['po_razin_id'].map(inb_data.drop_duplicates(subset="PO&RAZIN&ID", keep="first").set_index('PO&RAZIN&ID')['actual_shipping_date']).fillna("")
-    final_df['Actual Arrival Date'] = final_df['po_razin_id'].map(inb_data.drop_duplicates(subset="PO&RAZIN&ID", keep="first").set_index('PO&RAZIN&ID')['actual_arrival_date']).fillna("")
-    final_df['Actual Delivery Date'] = final_df['po_razin_id'].map(inb_data.drop_duplicates(subset="PO&RAZIN&ID", keep="first").set_index('PO&RAZIN&ID')['actual_delivery_date']).fillna("")
-    final_df['Expected Arrival Date'] = final_df['po_razin_id'].map(inb_data.drop_duplicates(subset="PO&RAZIN&ID", keep="first").set_index('PO&RAZIN&ID')['expected_arrival_date']).fillna("")
-
+    final_df['Status'] = final_df['po_razin_id'].map(inb_data[['PO&RAZIN&ID', 'status']].drop_duplicates(subset="PO&RAZIN&ID", keep="first").set_index('PO&RAZIN&ID')['status']).fillna("")
+    final_df['Actual Pickup'] = final_df['po_razin_id'].map(inb_data[['PO&RAZIN&ID', 'actual_cargo_pick_up_date']].drop_duplicates(subset="PO&RAZIN&ID", keep="first").set_index('PO&RAZIN&ID')['actual_cargo_pick_up_date']).fillna("")
+    final_df['Actual Shipping Date3'] = final_df['po_razin_id'].map(inb_data[['PO&RAZIN&ID', 'actual_shipping_date']].drop_duplicates(subset="PO&RAZIN&ID", keep="first").set_index('PO&RAZIN&ID')['actual_shipping_date']).fillna("")
+    final_df['Actual Arrival Date'] = final_df['po_razin_id'].map(inb_data[['PO&RAZIN&ID', 'actual_arrival_date']].drop_duplicates(subset="PO&RAZIN&ID", keep="first").set_index('PO&RAZIN&ID')['actual_arrival_date']).fillna("")
+    final_df['Actual Delivery Date'] = final_df['po_razin_id'].map(inb_data[['PO&RAZIN&ID', 'actual_delivery_date']].drop_duplicates(subset="PO&RAZIN&ID", keep="first").set_index('PO&RAZIN&ID')['actual_delivery_date']).fillna("")
+    final_df['Expected Arrival Date'] = final_df['po_razin_id'].map(inb_data[['PO&RAZIN&ID', 'expected_arrival_date']].drop_duplicates(subset="PO&RAZIN&ID", keep="first").set_index('PO&RAZIN&ID')['expected_arrival_date']).fillna("")
 
     final_df['Actual pick-up date'] = pd.to_datetime(final_df['Actual pick-up date'], errors='coerce')
     final_df['Actual Shipping Date'] = pd.to_datetime(final_df['Actual Shipping Date'], errors='coerce')
@@ -283,17 +293,24 @@ def main(dfs_tables, dfs_excels):
     final_df['Expected Arrival Date'] = pd.to_datetime(final_df['Expected Arrival Date'], errors='coerce')
 
     def func_batch_pickup_status(row):
-        if pd.isna(row['Actual pick-up date']) or row['Actual pick-up date']=="":
+        def is_non_empty(*fields):
+            return any(pd.notna(row.get(field)) and str(row.get(field)).strip() != "" for field in fields)
+
+        pickup_date = row.get('Actual pick-up date')
+
+        if pd.isna(pickup_date) or str(pickup_date).strip() == "":
             if (
-                ((pd.notna(row['Gate In Date']) or row['Gate In Date']!="") or (pd.notna(row['Actual Shipping Date']) or row['Actual Shipping Date']!="")) or
-                ((pd.notna(row['Actual Arrival Date']) or row['Actual Arrival Date']!="") or (pd.notna(row['Actual Delivery Date']) or row['Actual Delivery Date']!="")) or
-                ((pd.notna(row['Actual Pickup']) or row['Actual Pickup']!="") or (pd.notna(row.get('Actual Shipping Date3')) or row.get('Actual Shipping Date3')!="")) or
-                row['Status'] in ["In Transit", "Received", "Partially Received"]):
+                is_non_empty('Gate In Date', 'Actual Shipping Date') or
+                is_non_empty('Actual Arrival Date', 'Actual Delivery Date') or
+                is_non_empty('Actual Pickup', 'Actual Shipping Date3') or
+                row.get('Status') in ["In Transit", "Received", "Partially Received"]
+            ):
                 return "Picked"
             else:
                 return "Not Picked"
         else:
-            return "Not Picked" if row['Actual pick-up date'].date() >= datetime.today().date() else "Picked"
+            pickup_date = pd.to_datetime(pickup_date).date()
+            return "Not Picked" if pickup_date >= datetime.today().date() else "Picked"
 
     final_df['Batch Pickup Status'] = final_df.apply(func_batch_pickup_status, axis=1)
 
@@ -310,34 +327,38 @@ def main(dfs_tables, dfs_excels):
 
     final_df['VP Booking Status'] = final_df.apply(lambda row: func_vp_booking_status(row, batch_data), axis=1)
 
-    final_df["FOB Date"] = final_df["batch_id"].map(batch_data.drop_duplicates(subset="batch_id", keep="first").set_index("batch_id")["cfs_cut_off"]).fillna("")
-    final_df["FOB Status"] = final_df["batch_id"].map(fob_date.drop_duplicates(subset="BATCH ID", keep="first").set_index("BATCH ID")["Pickup Status"]).fillna("") ## not needed anymore
+    final_df["FOB Date"] = final_df["batch_id"].map(batch_data[['batch_id', 'cfs_cut_off']].drop_duplicates(subset="batch_id", keep="first").set_index("batch_id")["cfs_cut_off"]).fillna("")
+    final_df['FOB Date'] = pd.to_datetime(final_df['FOB Date'], errors='coerce')
 
-    final_df["Incoterms2"] = final_df["batch_id"].map(batch_data.drop_duplicates(subset="batch_id", keep="first").set_index("batch_id")["incoterms"]).fillna("")
-    final_df["SPD"] = final_df["batch_id"].map(batch_data.drop_duplicates(subset="batch_id", keep="first").set_index("batch_id")["scr_date"]).fillna("")
-    final_df["SPD Delay Reason"] = final_df["batch_id"].map(batch_data.drop_duplicates(subset="batch_id", keep="first").set_index("batch_id")["scrd_delay_reasons"]).fillna("")
+
+    final_df["FOB Status"] = final_df["batch_id"].map(fob_date[['BATCH ID', 'Pickup Status']].drop_duplicates(subset="BATCH ID", keep="first").set_index("BATCH ID")["Pickup Status"]).fillna("") ## not needed anymore
+
+    final_df["Incoterms2"] = final_df["batch_id"].map(batch_data[['batch_id', 'incoterms']].drop_duplicates(subset="batch_id", keep="first").set_index("batch_id")["incoterms"]).fillna("")
+    final_df["SPD"] = final_df["batch_id"].map(batch_data[['batch_id', 'scr_date']].drop_duplicates(subset="batch_id", keep="first").set_index("batch_id")["scr_date"]).fillna("")
+    final_df["SPD Delay Reason"] = final_df["batch_id"].map(batch_data[['batch_id', 'scrd_delay_reasons']].drop_duplicates(subset="batch_id", keep="first").set_index("batch_id")["scrd_delay_reasons"]).fillna("")
 
     def func_shipping_status(row):
-        if pd.isna(row['INB#']) or row['INB#'] == "":
+        def is_non_empty(*fields):
+            return any(pd.notna(row.get(f)) and str(row.get(f)).strip() != "" for f in fields)
+
+        if pd.isna(row.get('INB#')) or str(row.get('INB#')).strip() == "":
             return "Not Shipped"
         else:
-            condition_or = (
-                (pd.notna(row.get('Actual Shipping Date3')) or row.get('Actual Shipping Date3')!="") or
-                (pd.notna(row['Actual Arrival Date']) or row['Actual Arrival Date']!="") or
-                (pd.notna(row['Actual Delivery Date']) or row['Actual Delivery Date']!="") or
-                (pd.notna(row['Actual Shipping Date']) or row['Actual Shipping Date']!="") or
-                row['Status'] == "Received" or
-                row['Status'] == "Partially Received"
-            )
-            if condition_or:
+            if (
+                is_non_empty('Actual Shipping Date3') or
+                is_non_empty('Actual Arrival Date', 'Actual Delivery Date') or
+                is_non_empty('Actual Shipping Date') or
+                row.get('Status') in ["In Transit", "Received", "Partially Received"]
+            ):
                 return "Shipped"
             else:
                 return "Not Shipped"
 
     final_df['Shipping Status'] = final_df.apply(func_shipping_status, axis=1)
 
-    final_df['Substatus'] = final_df['po_razin_id'].map(inb_data.drop_duplicates(subset="PO&RAZIN&ID", keep="first").set_index('PO&RAZIN&ID')['substatus']).fillna("")
-    final_df['Shipment Method'] = final_df['po_razin_id'].map(inb_data.drop_duplicates(subset="PO&RAZIN&ID", keep="first").set_index('PO&RAZIN&ID')['shipment_method']).fillna("")
+
+    final_df['Substatus'] = final_df['po_razin_id'].map(inb_data[['PO&RAZIN&ID', 'substatus']].drop_duplicates(subset="PO&RAZIN&ID", keep="first").set_index('PO&RAZIN&ID')['substatus']).fillna("")
+    final_df['Shipment Method'] = final_df['po_razin_id'].map(inb_data[['PO&RAZIN&ID', 'shipment_method']].drop_duplicates(subset="PO&RAZIN&ID", keep="first").set_index('PO&RAZIN&ID')['shipment_method']).fillna("")
 
     def func_booking_form_status(row, booking_form_df):
         if pd.isna(row['batch_id']) or row['batch_id'] == "":
@@ -361,61 +382,68 @@ def main(dfs_tables, dfs_excels):
 
     final_df['Gate In Date'] = pd.to_datetime(final_df['Gate In Date'], errors='coerce')
     final_df['Actual pick-up date'] = pd.to_datetime(final_df['Actual pick-up date'], errors='coerce')
+    final_df['confirmed_crd'] = pd.to_datetime(final_df['confirmed_crd'], errors='coerce')
+    final_df['confirmed_crd'] = pd.to_datetime(final_df['confirmed_crd'], errors='coerce')
+    final_df['Actual Pickup'] = pd.to_datetime(final_df['Actual Pickup'], errors='coerce')
 
     def calculate_estimated_lotif_delivery_date(row):
-        if (pd.notna(row['Actual Delivery Date']) or row['Actual Delivery Date']!=""):
+        if (pd.notna(row['Actual Delivery Date']) and row['Actual Delivery Date']!=""):
             return row['Actual Delivery Date']
-        elif (pd.notna(row['Actual Arrival Date']) or row['Actual Arrival Date']!=""):
+        elif (pd.notna(row['Actual Arrival Date']) and row['Actual Arrival Date']!=""):
             return row['Actual Arrival Date'] + timedelta(days=15)
-        elif (pd.notna(row['Actual Shipping Date3']) or row['Actual Shipping Date3']!=""):
+        elif (pd.notna(row['Actual Shipping Date3']) and row['Actual Shipping Date3']!=""):
             return row['Actual Shipping Date3'] + timedelta(days=40)
-        elif (pd.notna(row['Actual Pickup']) or row['Actual Pickup']!=""):
+        elif (pd.notna(row['Actual Pickup']) and row['Actual Pickup']!=""):
             return row['Actual Pickup'] + timedelta(days=50)
-        elif (pd.notna(row['Gate In Date']) or row['Gate In Date']!=""):
+        elif (pd.notna(row['Gate In Date']) and row['Gate In Date']!=""):
             return row['Gate In Date'] + timedelta(days=45)
-        elif (pd.notna(row['Actual pick-up date']) or row['Actual pick-up date']!=""):
+        elif (pd.notna(row['Actual pick-up date']) and row['Actual pick-up date']!=""):
             return row['Actual pick-up date'] + timedelta(days=50)
-        elif (pd.notna(row['confirmed_crd']) or row['confirmed_crd']!=""):
+        elif (pd.notna(row['confirmed_crd']) and row['confirmed_crd']!=""):
             return row['confirmed_crd'] + timedelta(days=45)
-        elif (pd.notna(row['planned_prd']) or row['planned_prd']!=""):
+        elif (pd.notna(row['planned_prd']) and row['planned_prd']!=""):
             return row['planned_prd'] + timedelta(days=55)
         else:
             return datetime.today() + timedelta(days=100)
         
     final_df['Estimated OTIF Delivery Date'] = final_df.apply(calculate_estimated_lotif_delivery_date, axis=1)
-    final_df['Estimated OTIF Delivery Date'] = pd.to_datetime(final_df['Estimated OTIF Delivery Date'], errors='coerce')
+    final_df['Estimated OTIF Delivery Date'] = pd.to_datetime(final_df['Estimated OTIF Delivery Date'], errors='coerce').dt.date
 
     inb_data_2 = pd.DataFrame()
     inb_data_2['Shipment Number'] = final_df['INB#'].unique()
-    inb_data_2['Joey Status'] = inb_data_2['Shipment Number'].map(telex_supplier.drop_duplicates(subset="shipment number", keep="first").set_index('shipment number')['Final Status']).fillna("Not Released")
-    inb_data_2['Tableau (Supplier)'] = inb_data_2['Shipment Number'].map(telex_tableau.drop_duplicates(subset="shipment_number", keep="first").set_index('shipment_number')['Final Status (Supplier)']).fillna("Not Released")
-    inb_data_2['Tableau (FFW)'] = inb_data_2['Shipment Number'].map(telex_tableau.drop_duplicates(subset="shipment_number", keep="first").set_index('shipment_number')['Final Status (FFW)']).fillna("Not Released")
-    inb_data_2['Muazam Status'] = inb_data_2['Shipment Number'].map(telex_ffw.drop_duplicates(subset="Shipment Number", keep="first").set_index('Shipment Number')['Final Status']).fillna("Not Released")
+    inb_data_2['Joey Status'] = inb_data_2['Shipment Number'].map(telex_supplier[['shipment number', 'Final Status']].drop_duplicates(subset="shipment number", keep="first").set_index('shipment number')['Final Status']).fillna("Not Released")
+    inb_data_2['Tableau (Supplier)'] = inb_data_2['Shipment Number'].map(telex_tableau[['shipment_number', 'Final Status (Supplier)']].drop_duplicates(subset="shipment_number", keep="first").set_index('shipment_number')['Final Status (Supplier)']).fillna("Not Released")
+    inb_data_2['Tableau (FFW)'] = inb_data_2['Shipment Number'].map(telex_tableau[['shipment_number', 'Final Status (FFW)']].drop_duplicates(subset="shipment_number", keep="first").set_index('shipment_number')['Final Status (FFW)']).fillna("Not Released")
+    inb_data_2['Muazam Status'] = inb_data_2['Shipment Number'].map(telex_ffw[['Shipment Number', 'Final Status']].drop_duplicates(subset="Shipment Number", keep="first").set_index('Shipment Number')['Final Status']).fillna("Not Released")
 
     inb_data_2['Final Status (FFW)'] = inb_data_2.apply(lambda row: row['Tableau (FFW)'] if row['Tableau (FFW)']=="Released" else row['Muazam Status'], axis=1)
     inb_data_2['Final Status (SM)'] = inb_data_2.apply(lambda row: row['Final Status (FFW)'] if row['Final Status (FFW)']=="Released" else row['Tableau (Supplier)'], axis=1)
     inb_data_2['Final Status (Supplier)'] = inb_data_2.apply(lambda row: row['Final Status (FFW)'] if row['Final Status (FFW)']=="Released" else row['Final Status (SM)'] if row['Final Status (SM)']=="Released" else row['Joey Status'], axis=1)
 
+    inb_status_map = inb_data_2.set_index('Shipment Number')['Final Status (Supplier)']
+
     def func_supplier_telex_status(row):
-        if row['Substatus']=="Delivered" or (pd.notna(row['INB#'])  or row['INB#']!=""):
+        if row['Substatus'] == "Delivered" or (pd.isna(row['INB#']) or row['INB#'] == ""):
             return "Released"
         else:
-            row['INB#'].map(inb_data_2.set_index('Shipment Number')['Final Status (Supplier)'])
+            return inb_status_map.get(row['INB#'], None)
         
     final_df['Supplier Telex Status'] = final_df.apply(func_supplier_telex_status, axis=1).fillna("Not in INB Sheet")
 
+    inb_status_map = inb_data_2.set_index('Shipment Number')['Final Status (SM)']
+
     def func_supplier_telex_status(row):
-        if row['Substatus']=="Delivered" or (pd.notna(row['INB#'])  or row['INB#']!=""):
+        if row['Substatus']=="Delivered" or (pd.isna(row['INB#']) or row['INB#']==""):
             return "Released"
         else:
-            row['INB#'].map(inb_data_2.set_index('Shipment Number')['Final Status (SM)'])
+            return inb_status_map.get(row['INB#'], None)
         
     final_df['SM Telex Status'] = final_df.apply(func_supplier_telex_status, axis=1).fillna("Not in INB Sheet")
 
     inb_map = inb_data_2.set_index('Shipment Number')['Final Status (FFW)'].to_dict()
 
     def func_supplier_telex_status(row):
-        if row['Substatus'] == "Delivered" or (pd.notna(row['INB#'])  or row['INB#']!=""):
+        if row['Substatus'] == "Delivered" or (pd.isna(row['INB#']) or row['INB#']==""):
             return "Released"
         else:
             return inb_map.get(row['INB#'], None)
@@ -440,9 +468,10 @@ def main(dfs_tables, dfs_excels):
     def get_batch_compliance(pickup_status, batch_id, compliance_status):
         if pickup_status == "Picked":
             return "Approved"
-        if not batch_id:
+        elif pd.isna(batch_id) or batch_id=="":
             return compliance_status
-        return batch_compliance_map.get(batch_id, "Pending Approval")
+        else:
+            return batch_compliance_map.get(batch_id, "Pending Approval")
 
     final_df["Batch Compliance"] = final_df.apply(
         lambda row: get_batch_compliance(
@@ -454,11 +483,11 @@ def main(dfs_tables, dfs_excels):
     )
 
     final_df['A. Anti PO Line'] = final_df.apply(lambda row: "No" if row["Batch Pickup Status"]=="Picked" else "Yes" if row["considered_for_anti-po"]=="Yes" else "No", axis=1)
-    final_df['B. Compliance Blocked'] = final_df.apply(lambda row: "No" if row["Batch Pickup Status"]=="Picked" else "Yes" if row["Compliance Status"]=="Blocked" else "Yes" if row["Compliance Status"]=="Missing" else "No", axis=1)
+    final_df['B. Compliance Blocked'] = final_df.apply(lambda row: "No" if row["Batch Pickup Status"]=="Picked" else "Yes" if row["Compliance Status"] in ["Blocked", "Missing"] else "No", axis=1)
 
     final_df['C. Shipped'] = final_df.apply(lambda row: "No" if row["Batch Pickup Status"]=="Picked" else "Yes" if row["production_status"]=="Shipped" else "No", axis=1)
 
-    final_df['01. PO Approval Pending'] = final_df.apply(lambda row: "No" if row["Batch Pickup Status"]=="Picked" else "Yes" if row["final_status"]=="Pending Supervisor Approval" else "Yes" if row["final_status"]=="Rejected By Supervisor" else "No", axis=1)
+    final_df['01. PO Approval Pending'] = final_df.apply(lambda row: "No" if row["Batch Pickup Status"]=="Picked" else "Yes" if row["final_status"] in ["Pending Supervisor Approval", "Rejected By Supervisor"] else "No", axis=1)
     final_df['02. Supplier Confirmation Pending'] = final_df.apply(lambda row: "No" if row["Batch Pickup Status"]=="Picked" else "No" if row["supplier_confirmation_status"]=="Confirmed" else "Yes", axis=1)
     final_df['03. PI Upload Pending'] = final_df.apply(lambda row: 
                                                     "No" if row["Batch Pickup Status"]=="Picked" 
@@ -500,7 +529,7 @@ def main(dfs_tables, dfs_excels):
             "No" if (row["Transparency Check"] == "No" or row["Transparency Pending"] == "No") else "Yes"
         ), axis=1
     )
-    
+
     final_df["08. PRD Pending"] = final_df.apply(lambda row: "No" if row["Batch Pickup Status"] == "Picked" else ("Yes" if pd.isna(row["prd"]) or row["prd"] == "" else "No"), axis=1)
 
     final_df["09. Under Production"] = final_df.apply(
@@ -559,11 +588,17 @@ def main(dfs_tables, dfs_excels):
         ),
         axis=1
     )
+
     final_df["17. QC Schedule Pending"] = final_df.apply(
         lambda row: "No" if row["Batch Pickup Status"] == "Picked" else (
-            "No" if row["Batch QC Pending"] == "No" else (
-                "Yes" if row["Max QC Date"] == "Not Scheduled" or row["Max QC Date"] > (pd.Timestamp.today() - pd.Timedelta(days=1)) else "No"
-            )
+            "No" if row["Batch QC Pending"] == "No" else 
+                "Yes" if (
+                    (row["Max QC Date"] == "Not Scheduled" or 
+                    (isinstance(row["Max QC Date"], pd.Timestamp) and row["Max QC Date"] > (pd.Timestamp.today() - pd.Timedelta(days=1))))
+                    or
+                    (row["Max QC Date"] == "No Batch" or 
+                    (isinstance(row["Max QC Date"], pd.Timestamp) and row["Max QC Date"] > (pd.Timestamp.today() - pd.Timedelta(days=1))))
+                ) else "No"
         ),
         axis=1
     )
@@ -584,8 +619,8 @@ def main(dfs_tables, dfs_excels):
     final_df["20. Pre Pickup Check"] = final_df.apply(
         lambda row: "No" if row["Batch Pickup Status"] == "Picked" else (
             "Yes" if row["Batch QC Pending"] == "Yes" else (
-                "Yes" if (row["Incoterms2"] != "FOB" and pd.to_datetime(row["SPD"], errors="coerce") > pd.Timestamp.today()) else (
-                    "Yes" if (row["Incoterms2"] == "FOB" and (pd.isna(row["FOB Date"]) or row["FOB Date"] == "")) else "No"
+                "Yes" if (row["Incoterms2"] != "FOB" and (row["SPD"]=="" or pd.to_datetime(row["SPD"], errors="coerce") > pd.Timestamp.today())) else (
+                    "Yes" if (row["Incoterms2"] == "FOB" and not (isinstance(row["FOB Date"], pd.Timestamp))) else "No"
                 )
             )
         ),
@@ -617,7 +652,7 @@ def main(dfs_tables, dfs_excels):
     )
     final_df["26. BL Payment Pending - In Transit"] = final_df.apply(
         lambda row: "No" if (row["INB Payment Status"] == "Paid" or row["INB Payment Type"] != "BL" or row["29. Stock Delivery Pending"] == "No") else (
-            "No" if (pd.isna(row["Actual Arrival Date"]) or row["Actual Arrival Date"] != "") else "Yes"
+            "No" if (isinstance(row["Actual Arrival Date"], pd.Timestamp)) else "Yes"
         ),
         axis=1
     )
@@ -640,10 +675,10 @@ def main(dfs_tables, dfs_excels):
         "No"
         if (row["Shipment Method"] != "Ocean" or
             row["29. Stock Delivery Pending"] == "No" or
-            row["Incoterms2"] == "DDP" or
-            row["Incoterms2"] == "DAP")
+            row["Incoterms2"] in ["DDP", "DAP"]
+        )
         else (
-            "Yes" if (pd.isna(row["Actual Arrival Date"]) or row["Actual Arrival Date"] == "")else ("No" if row["FFW Telex Status"] == "Released" else "Yes")
+            "Yes" if (pd.isna(row["Actual Arrival Date"]) or row["Actual Arrival Date"] == "") else ("No" if row["FFW Telex Status"] == "Released" else "Yes")
         )
     ),
     axis=1
@@ -679,7 +714,7 @@ def main(dfs_tables, dfs_excels):
         for col in pending_columns:
             if row[col] == 'Yes':
                 return col
-        return np.nan
+        return None
 
     final_df['Current Status'] = final_df.apply(func_current_status, axis=1)
     final_df["Status #"] = final_df["Current Status"].str.extract(r'^([^\.]+)')
@@ -696,7 +731,7 @@ def main(dfs_tables, dfs_excels):
     def func_po_approval_ss(row, ev1_value, g5_value, g6_value):
         if f"{row['Current Status']}-SS" != ev1_value:
             return "NA"
-        if row["final_status"] == "Pending Supervisor Approval":
+        elif row["final_status"] == "Pending Supervisor Approval":
             return g5_value
         elif row["final_status"] == "Rejected By Supervisor":
             return g6_value
@@ -898,6 +933,8 @@ def main(dfs_tables, dfs_excels):
     #             return map_g50
     #     return map_g49
 
+    final_df['L2 SPD'] = final_df['batch_id'].map(spd_blockers.drop_duplicates(subset="batch_id", keep="first").set_index('batch_id')['Final Status']).fillna("Not in SPD Sheet")
+
     def func_supplier_pickup_date_pending_ss(row, fn1_value, map_g48_val, map_g49_val, map_g50_val, map_g51_val):
         if f"{row['Current Status']}-SS" != fn1_value:
             return "NA"
@@ -948,7 +985,7 @@ def main(dfs_tables, dfs_excels):
             return "NA"
         if row["Incoterms2"] in ["DDP", "DAP"]:
             return map_g54
-        if (pd.notna(row['FOB Date'])  or row['FOB Date']!=""):
+        if (pd.notna(row['FOB Date'])  and row['FOB Date']!=""):
             if row["FOB Date"].date() < pd.Timestamp.today().date():
                 return map_g54
             elif row["FOB Date"].date() < (pd.Timestamp.today() + pd.Timedelta(days=2)).date():
@@ -972,23 +1009,18 @@ def main(dfs_tables, dfs_excels):
 
     final_df['Team'] = final_df['Vendor ID'].map(vendor_mapping['Team'])
 
-    # final_df['Team'] = final_df.apply(
-    #     lambda row: "CN->US" if row['Team'] == 'China' and row['marketplace_header'] == 'US'
-    #     else vendor_mapping['Team'].get(row['Vendor ID'], ""),
-    #     axis=1
-    # )
 
-    final_df['Reporting Status'] = final_df['Current Status'].map(status_mapping[['Status', 'Reporting Status']].drop_duplicates(subset="Reporting Status", keep="first").set_index('Status')['Reporting Status']).fillna("")
+    final_df['Reporting Status'] = final_df['Current Status'].map(status_mapping[['Status', 'Reporting Status']].drop_duplicates(subset="Status", keep="first").set_index('Status')['Reporting Status']).fillna("")
 
-    final_df['L2 Compliance'] = final_df['po_razin_id'].map(compliance.drop_duplicates(subset="PO&RAZIN&ID", keep="first").set_index('PO&RAZIN&ID')['Final Status']).fillna("Not in Compliance Sheet")
-    final_df['L2 PI'] = final_df['document_number'].map(prepayment.drop_duplicates(subset="document number", keep="first").set_index('document number')['Final Status']).fillna("Not in PI Sheet")
-    final_df['L2 PRD'] = final_df['po_razin_id'].map(prd.drop_duplicates(subset="otif_id", keep="first").set_index('otif_id')['Final Status']).fillna("Not in PRD Sheet")
-    final_df['L2 CPRD'] = final_df['po_razin_id'].map(cprd.drop_duplicates(subset="po_razin_id", keep="first").set_index('po_razin_id')['Final Status']).fillna("Not in CPRD Sheet")
-    final_df['L2 G2'] = final_df['po_razin_id'].map(g2.drop_duplicates(subset="otif_id", keep="first").set_index('otif_id')['Final Status']).fillna("Not in G2 Sheet")
-    final_df['L2 G4'] = final_df['batch_id'].map(g4.drop_duplicates(subset="batch_id", keep="first").set_index('batch_id')['Final Status']).fillna("Not in G4 Sheet")
-    final_df['L2 QC'] = final_df['po_razin_id'].map(qc.drop_duplicates(subset="PO RAZIN ID", keep="first").set_index('PO RAZIN ID')['Final Status2']).fillna("Not in QC Sheet")
-    final_df['L2 SPD'] = final_df['batch_id'].map(spd_blockers.drop_duplicates(subset="batch_id", keep="first").set_index('batch_id')['Final Status']).fillna("Not in SPD Sheet")
-    final_df['L2 Pickup'] = final_df['batch_id'].map(ffw_status.drop_duplicates(subset="Batch ID", keep="first").set_index('Batch ID')['Final Blocker Reason']).fillna("Not in FFW Sheet")
+    final_df['L2 Compliance'] = final_df['po_razin_id'].map(compliance[["PO&RAZIN&ID", "Final Status"]].drop_duplicates(subset="PO&RAZIN&ID", keep="first").set_index('PO&RAZIN&ID')['Final Status']).fillna("Not in Compliance Sheet")
+    final_df['L2 PI'] = final_df['document_number'].map(prepayment[["document number", "Final Status"]].drop_duplicates(subset="document number", keep="first").set_index('document number')['Final Status']).fillna("Not in PI Sheet")
+    final_df['L2 PRD'] = final_df['po_razin_id'].map(prd[["otif_id", "Final Status"]].drop_duplicates(subset="otif_id", keep="first").set_index('otif_id')['Final Status']).fillna("Not in PRD Sheet")
+    final_df['L2 CPRD'] = final_df['po_razin_id'].map(cprd[["po_razin_id", "Final Status"]].drop_duplicates(subset="po_razin_id", keep="first").set_index('po_razin_id')['Final Status']).fillna("Not in CPRD Sheet")
+    final_df['L2 G2'] = final_df['po_razin_id'].map(g2[["otif_id", "Final Status"]].drop_duplicates(subset="otif_id", keep="first").set_index('otif_id')['Final Status']).fillna("Not in G2 Sheet")
+    final_df['L2 G4'] = final_df['batch_id'].map(g4[["batch_id", "Final Status"]].drop_duplicates(subset="batch_id", keep="first").set_index('batch_id')['Final Status']).fillna("Not in G4 Sheet")
+    final_df['L2 QC'] = final_df['po_razin_id'].map(qc[["PO RAZIN ID", "Final Status2"]].drop_duplicates(subset="PO RAZIN ID", keep="first").set_index('PO RAZIN ID')['Final Status2']).fillna("Not in QC Sheet")
+    # final_df['L2 SPD'] = final_df['batch_id'].map(spd_blockers.drop_duplicates(subset="batch_id", keep="first").set_index('batch_id')['Final Status']).fillna("Not in SPD Sheet")
+    final_df['L2 Pickup'] = final_df['batch_id'].map(ffw_status[["Batch ID", "Final Blocker Reason"]].drop_duplicates(subset="Batch ID", keep="first").set_index('Batch ID')['Final Blocker Reason']).fillna("Not in FFW Sheet")
 
     ffw_blockers_map = ffw_blockers.drop_duplicates(subset="Batch ID", keep="first").set_index("Batch ID")["Final Status"].to_dict()
     def func_pickup_blocker(batch_id, status_hash):
@@ -1007,7 +1039,7 @@ def main(dfs_tables, dfs_excels):
     def func_non_fob_pickup_pending_ss(row, fq1_value, map_g57, map_g58, map_g59):
         if f"{row['Current Status']}-SS" != fq1_value:
             return "NA"
-        if (pd.notna(row["Actual pick-up date"]) or row["Actual pick-up date"] != ""):
+        if (pd.notna(row["Actual pick-up date"]) and row["Actual pick-up date"] != ""):
             return map_g57
         if row["Pickup Blocker"] != "No":
             return map_g58
@@ -1240,10 +1272,11 @@ def main(dfs_tables, dfs_excels):
         return np.nan
 
     final_df['Sub Status'] = final_df.apply(func_sub_status, axis=1)
-    final_df["Sub Status #"] = final_df["Sub Status"].str.extract(r"^(\d+)", expand=False)
+    final_df["Sub Status #"] = final_df['Sub Status'].astype(str).str.extract(r'^([^\.]+)')
 
-    telex_supplier_map = telex_supplier.drop_duplicates(subset="shipment number", keep="first").set_index("shipment number")["Final Blocker Status"].to_dict()
-    telex_ffw_map = telex_ffw.drop_duplicates(subset="Shipment Number", keep="first").set_index("Shipment Number")["Final Blocker Status"].to_dict()
+    telex_supplier_map = telex_supplier[["shipment number", "Final Blocker Status"]].drop_duplicates(subset="shipment number", keep="first").set_index("shipment number")["Final Blocker Status"].to_dict()
+    telex_ffw_map = telex_ffw[["Shipment Number", "Final Blocker Status"]].drop_duplicates(subset="Shipment Number", keep="first").set_index("Shipment Number")["Final Blocker Status"].to_dict()
+
     def func_l2_telex(telex_status, shipment_number):
         if telex_status in ["28a", "28b", "28d", "28e"]:
             return telex_supplier_map.get(shipment_number, "Not in Telex Sheet")
@@ -1319,42 +1352,24 @@ def main(dfs_tables, dfs_excels):
     )
 
 
-    final_df['Accountable'] = final_df['Sub Status'].map(status_mapping.drop_duplicates(subset="Sub Status", keep="first").set_index('Sub Status')['Accountable']).fillna("")
-    final_df['Responsible'] = final_df['Sub Status'].map(status_mapping.drop_duplicates(subset="Sub Status", keep="first").set_index('Sub Status')['Responsible']).fillna("")
+    final_df['Accountable'] = final_df['Sub Status'].map(status_mapping[["Sub Status", "Accountable"]].drop_duplicates(subset="Sub Status", keep="first").set_index('Sub Status')['Accountable']).fillna("NA")
+    final_df['Responsible'] = final_df['Sub Status'].map(status_mapping[["Sub Status", "Responsible"]].drop_duplicates(subset="Sub Status", keep="first").set_index('Sub Status')['Responsible']).fillna("NA")
 
-    # status_owner_map_first = blockers_mapping.drop_duplicates(subset="Blocker bucket", keep="last").set_index("Blocker bucket")["POC"].to_dict()
-    # status_owner_map_second = blockers_mapping.drop_duplicates(subset="Blocker bucket", keep="first").set_index("Blocker bucket")["POC"].to_dict()
-    # def func_final_responsibility(pickup_blocker, l2_final_status, existing_responsibility):
-    #     if pickup_blocker != "No":
-    #         return status_owner_map_first.get(l2_final_status, "Fahad Farooq")
-    #     if l2_final_status != "No L2 Status":
-    #         return status_owner_map_second.get(l2_final_status, "Fahad Farooq")
-    #     return existing_responsibility
-
-    # final_df["Final Responsibility"] = final_df.apply(
-    #     lambda row: func_final_responsibility(
-    #         row["Pickup Blocker"],
-    #         row["L2 Final Status"],
-    #         row["Responsible"]
-    #     ),
-    #     axis=1
-    # )
-
-    excel_xlookup_map = blockers_mapping.drop_duplicates(subset="Blocker bucket", keep="first").set_index("Blocker bucket")["POC"].to_dict()
+    excel_xlookup_map = blockers_mapping[["Blocker bucket", "POC"]].drop_duplicates(subset="Blocker bucket", keep="first").set_index("Blocker bucket")["POC"].fillna("NA").to_dict()
 
     def func_final_responsibility(row):
-        l2_final_status = row["L2 Final Status"]
-        status_hash = row["Status #"]
-        batch_invoice_submission_status = row["Batch Invoice Submission Status"]
-        responsible = row["Responsible"]
+        # l2_final_status = row["L2 Final Status"]
+        # status_hash = row["Status #"]
+        # batch_invoice_submission_status = row["Batch Invoice Submission Status"]
+        # responsible = row["Responsible"]
 
-        if l2_final_status != "No L2 Status":
-            return excel_xlookup_map.get(l2_final_status, "Fahad Farooq")
+        if row["L2 Final Status"] != "No L2 Status":
+            return excel_xlookup_map.get(row["L2 Final Status"], "Fahad Farooq")
         else:
-            if status_hash == "25" and batch_invoice_submission_status == "Submitted":
+            if row["Status #"] == "25" and row["Batch Invoice Submission Status"] == "Submitted":
                 return "NA"
             else:
-                return responsible
+                return row["Responsible"]
 
     final_df["Final Responsibility"] = final_df.apply(func_final_responsibility, axis=1)
 
@@ -1385,7 +1400,7 @@ def main(dfs_tables, dfs_excels):
 
 
     def func_final_team(responsibility):
-        if len(responsibility) <= 3:
+        if not isinstance(responsibility, str) or len(responsibility) <= 3:
             return responsibility
         if responsibility in ["Muazam Shahzad", "Arvid Gottschall", "Navneet Singh"]:
             return "FFW"
@@ -1474,9 +1489,5 @@ def main(dfs_tables, dfs_excels):
 
     filtered_df = filtered_df[filtered_df["document_number"].notna() & (filtered_df["document_number"].astype(str).str.strip() != "")]
 
-    # pending 19 a booking form sent
-    # fahad may add new status in otif related to g4
-    #  sub-stage before IM sign-off
-    # replace ffw status sheet - fahahd - added relevant from NS
 
     return filtered_df
