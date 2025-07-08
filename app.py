@@ -34,8 +34,8 @@ steps = [
 
 for step in tqdm(steps, desc="Overall Progress", unit="step"):
     if step == "Load credentials":
-        print("Current working directory:", os.getcwd())
-        print("creds.txt exists?", os.path.exists('creds.txt'))
+        # print("Current working directory:", os.getcwd())
+        # print("creds.txt exists?", os.path.exists('creds.txt'))
         creds = load_creds('creds.txt')
 
     elif step == "Ingest tables":
@@ -72,8 +72,8 @@ for step in tqdm(steps, desc="Overall Progress", unit="step"):
         # continue
 
     elif step == "Calculate DoD view":
-        # final_df_with_dod = dod_main(final_df)
-        final_df_with_dod = final_df
+        final_df_with_dod = dod_main(final_df)
+        # final_df_with_dod = final_df
 
     elif step == "Upload to SharePoint":
         root_url = "https://razrgroup.sharepoint.com/sites/Razor"

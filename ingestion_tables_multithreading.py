@@ -179,7 +179,6 @@ batch_sql_query = """
     MAX(BatchData.expected_shipping_date) AS expected_shipping_date,
     MAX(BatchData.actual_shipping_date) AS actual_shipping_date
     FROM razor_db.netsuite.batch_lines AS BatchData
-    
     LEFT JOIN (
         SELECT 
             batch_id, 
@@ -199,9 +198,7 @@ batch_sql_query = """
         WHERE PORank = 1
     ) AS POData
     ON BatchData.batch_id = POData.batch_id
-    
     WHERE POData.final_status NOT IN ('Closed', 'Legacy Closed', 'Fully Billed')
-    
     GROUP BY BatchData.batch_id;
     """
 
@@ -718,31 +715,30 @@ def main(creds):
             try:
                 data = future.result()
                 results[query_name] = data
-                # print(f"Successfully fetched {query_name}")
             except Exception as exc:
                 print(f'{query_name} generated an exception: {exc}')
-                results[query_name] = pd.DataFrame() # Ensure a DataFrame is returned even on error
+                results[query_name] = pd.DataFrame()
 
     # Post-processing of fetched dataframes
     if 'batch_data' in results and not results['batch_data'].empty:
         results['batch_data']['Booking Status'] = results['batch_data'].apply(
             lambda row: "Not Booked" if row["vp_booking_status"] == "Cancelled"
-            else "Booked" if row["vp_booking_status"] != ""
-            else "Booked" if row["freight_forwarder"] != ""
+            else "Booked" if (pd.notna(row["vp_booking_status"]) and row["vp_booking_status"] != "")
+            else "Booked" if (pd.notna(row["freight_forwarder"]) and row["freight_forwarder"] != "")
             else "Not Booked", axis=1)
 
     if 'inb_data' in results and not results['inb_data'].empty:
         results['inb_data']['PO&RAZIN&ID'] = results['inb_data']['po'].astype(str) + results['inb_data']['item'].astype(str) + results['inb_data']['line_id'].astype(str)
 
     if 'telex_tableau' in results and not results['telex_tableau'].empty:
-        results['telex_tableau']['Final Status (Supplier)'] = results['telex_tableau']["telex_release_date_supplier"].apply(lambda x: "Not Released" if x == "" else "Released")
-        results['telex_tableau']['Final Status (FFW)'] = results['telex_tableau']["telex_release_date_ffwp"].apply(lambda x: "Not Released" if x == "" else "Released")
+        results['telex_tableau']['Final Status (Supplier)'] = results['telex_tableau']["telex_release_date_supplier"].apply(lambda x: "Not Released" if x == "" or pd.isna(x) else "Released")
+        results['telex_tableau']['Final Status (FFW)'] = results['telex_tableau']["telex_release_date_ffwp"].apply(lambda x: "Not Released" if x == "" or pd.isna(x) else "Released")
 
     if 'pi_data' in results and not results['pi_data'].empty:
         results['pi_data']['PO#'] = results['pi_data']['vendor_id_po_number'].apply(lambda x: x[x.find("#")+1:x.find("#")+9] if "#" in x else "")
         pi_data_map = pd.DataFrame({
             "invoice_status": [
-                "rejected", "ocr2-rejected", "ocr1-rejected", "cancelled", np.nan, "-", "invalid",
+                "rejected", "ocr2-rejected", "ocr1-rejected", "cancelled", "nan", "-", "invalid",
                 "ocr1-accepted", "ocr2-accepted", "uploaded",
                 "accepted", "pending-ns",
                 "open-ns", "paid", "rejected-ns"
@@ -757,20 +753,38 @@ def main(creds):
         })
         results['pi_data']["status"] = results['pi_data']["invoice_status"].map(pi_data_map.set_index("invoice_status")["Status"]).fillna("03. PI Upload Pending")
 
+    # if 'master_data' in results and not results['master_data'].empty:
+    #     results['master_data']["razin_mp"] = results['master_data']["razin"].astype(str) + results['master_data']["market_place"].astype(str)
+    #     results['master_data']["Action"] = results['master_data']["preferred_supplier_open_po_stock_impact"].replace({
+    #         "None": "No Blocker",
+    #         "Reroute to non-Blocked Geo or Cancel PO": "Reroute or Cancel"
+    #     }).fillna(results['master_data']["preferred_supplier_open_po_stock_impact"])
+
     if 'master_data' in results and not results['master_data'].empty:
         results['master_data']["razin_mp"] = results['master_data']["razin"].astype(str) + results['master_data']["market_place"].astype(str)
-        results['master_data']["Action"] = results['master_data']["preferred_supplier_open_po_stock_impact"].replace({
-            "None": "No Blocker",
-            "Reroute to non-Blocked Geo or Cancel PO": "Reroute or Cancel"
-        }).fillna(results['master_data']["preferred_supplier_open_po_stock_impact"])
+
+        def determine_action(row):
+            impact = row["preferred_supplier_open_po_stock_impact"]
+            status = row["operating_status"]
+            
+            if impact == "None":
+                return "No Blocker"
+            elif impact == "Reroute to non-Blocked Geo or Cancel PO":
+                return "Reroute or Cancel"
+            elif impact == "On Hold" and status == "F":
+                return "Cancel PO"
+            else:
+                return impact
+
+        results['master_data']["Action"] = results['master_data'].apply(determine_action, axis=1)
 
     if 'compliance_hubspot' in results and not results['compliance_hubspot'].empty:
         results['compliance_hubspot'] = results['compliance_hubspot'][["deal_stage", "razin", "marketplace", "compliance_status", "vendor"]]
         eu_markets = {"FR", "BE", "ES", "PL", "NL", "SE", "IT", "DE"}
         results['compliance_hubspot']["Final MP"] = results['compliance_hubspot']["marketplace"].apply(lambda x: "Pan-EU" if x in eu_markets else x)
         results['compliance_hubspot']["RAZIN&MP"] = results['compliance_hubspot']["razin"].astype(str).str.strip() + results['compliance_hubspot']["Final MP"].astype(str)
-        results['compliance_hubspot']["Vendor Code"] = results['compliance_hubspot']["compliance_status"].str.extract(r"^(\S+)", expand=False).fillna("")
-        results['compliance_hubspot']["RAZIN&MP&Vendor"] = results['compliance_hubspot']["marketplace"] + results['compliance_hubspot']["compliance_status"]
+        results['compliance_hubspot']["Vendor Code"] = results['compliance_hubspot']["vendor"].str.extract(r"^(\S+)", expand=False).fillna("")
+        results['compliance_hubspot']["RAZIN&MP&Vendor"] = results['compliance_hubspot']["razin"].astype(str).str.strip() + results['compliance_hubspot']["Final MP"].astype(str) + results['compliance_hubspot']["Vendor Code"].astype(str)
 
     if ('dod_data' in results and not results['dod_data'].empty) and ('po_data' in results and not results['po_data'].empty):
         results['po_data']['po_razin_idx'] = (

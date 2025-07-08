@@ -456,10 +456,13 @@ def main(dfs_tables, dfs_excels):
     final_df['CM'] = final_df['Vendor ID'].map(cm_sm_vendor_mapping[['Vendor ID', 'CM']].drop_duplicates(subset="Vendor ID", keep="first").set_index('Vendor ID')['CM']).fillna("")
     final_df['SM'] = final_df['Vendor ID'].map(cm_sm_vendor_mapping[['Vendor ID', 'SM']].drop_duplicates(subset="Vendor ID", keep="first").set_index('Vendor ID')['SM']).fillna("")
 
-    final_df["razin_mp_vendor"] = final_df["item"].astype(str) + final_df["marketplace_header"].astype(str) + final_df["Vendor ID"].astype(str)
+    final_df["razin_mp_vendor"] = final_df["item"].astype(str).str.upper() + final_df["marketplace_header"].astype(str) + final_df["Vendor ID"].astype(str)
 
     ## would be better to fetch this info from a api or table
-    final_df['Compliance Status'] = final_df['razin_mp_vendor'].map(comp.drop_duplicates(subset="RAZIN&MP&Vendor", keep="first").set_index('RAZIN&MP&Vendor')['compliance_status']).fillna("Missing")
+    comp["RAZIN&MP&Vendor"] = comp["RAZIN&MP&Vendor"].str.strip()
+    comp["compliance_status"] = comp["compliance_status"].str.strip()
+
+    final_df['Compliance Status'] = final_df['razin_mp_vendor'].map(comp[["RAZIN&MP&Vendor", "compliance_status"]].drop_duplicates(subset="RAZIN&MP&Vendor", keep="first").set_index('RAZIN&MP&Vendor')['compliance_status']).fillna("Missing")
 
     batch_compliance_map = final_df.groupby("batch_id")["Compliance Status"].apply(
         lambda x: "Approved" if (x == "Approved").all() else "Pending Approval"
@@ -619,8 +622,8 @@ def main(dfs_tables, dfs_excels):
     final_df["20. Pre Pickup Check"] = final_df.apply(
         lambda row: "No" if row["Batch Pickup Status"] == "Picked" else (
             "Yes" if row["Batch QC Pending"] == "Yes" else (
-                "Yes" if (row["Incoterms2"] != "FOB" and (row["SPD"]=="" or pd.to_datetime(row["SPD"], errors="coerce") > pd.Timestamp.today())) else (
-                    "Yes" if (row["Incoterms2"] == "FOB" and not (isinstance(row["FOB Date"], pd.Timestamp))) else "No"
+                "Yes" if (row["Incoterms2"] != "FOB" and ((pd.isna(row["SPD"]) or row["SPD"]=="") or pd.to_datetime(row["SPD"], errors="coerce") > pd.Timestamp.today())) else (
+                    "Yes" if (row["Incoterms2"] == "FOB" and (pd.isna(row["FOB Date"]) or row["FOB Date"]=="")) else "No"
                 )
             )
         ),
@@ -762,7 +765,7 @@ def main(dfs_tables, dfs_excels):
         final_df["Current Status"] + "-SS" != "03. PI Upload Pending-SS","NA",final_df["Current Status"]
     )
     final_df["04. PI Approval Pending-SS"] = np.where(
-        final_df["Current Status"] + "-SS" != "03. PI Approval Pending-SS","NA",final_df["VP PI Status"]
+        final_df["Current Status"] + "-SS" != "04. PI Approval Pending-SS","NA",final_df["VP PI Status"]
     )
     def func_pi_payment_pending_ss(row, ez1_value, g13, g14, g15, g16):
         if f"{row['Current Status']}-SS" != ez1_value:
@@ -991,6 +994,8 @@ def main(dfs_tables, dfs_excels):
             elif row["FOB Date"].date() < (pd.Timestamp.today() + pd.Timedelta(days=2)).date():
                 return map_g55
         return map_g56
+
+    # final_df['FOB Date'] = pd.to_datetime(final_df['FOB Date'], errors='coerce').dt.date
 
     final_df["21. FOB Pickup Pending-SS"] = final_df.apply(
         lambda row: func_fob_pickup_pending_ss(
@@ -1288,73 +1293,44 @@ def main(dfs_tables, dfs_excels):
     )
 
 
-    def func_l2_final_status(
-        pickup_blocker, status_no, sub_status_no,
-        md_blocker,
-        l2_compliance, l2_pi, l2_prd, l2_cprd, l2_g2, l2_g4,
-        l2_qc, l2_spd, l2_pickup, l2_telex, production_status
-    ):
-        if pickup_blocker != "No":
-            return pickup_blocker
+    def func_l2_final_status(row):
+        if row['Pickup Blocker'] != "No":
+            return row['Pickup Blocker']
+        elif row['Status #'] == "D":
+            return row["MD Blocker"]
+        elif row['Status #'] == "B" or row['Sub Status #'] == "11a":
+            return row["L2 Compliance"]
+        elif row['Status #'] == "03" or row['Status #'] == "04":
+            return row["L2 PI"]
+        elif row['Status #'] == "08":
+            return row["L2 PRD"]
+        elif row['Sub Status #'] == "10a":
+            return row["L2 CPRD"]
+        elif row['Status #'] == "12":
+            return row["L2 G2"]
+        elif row['Sub Status #'] == "14a" or row['Sub Status #'] == "14b":
+            return row["L2 G4"]
+        elif row['Status #'] == "17" or row['Sub Status #'] == "20a":
+            return row["L2 QC"]
+        elif row['Sub Status #'] == "19b" or row['Sub Status #'] == "19d":
+            return row["L2 SPD"]
+        elif (row['Status #'] == "20" or row['Status #'] == "21" or row['Status #'] == "22") and row["production_status"] == "Cargo Picked(SM)":
+            return row["production_status"]
+        elif (row['Sub Status #'] == "14c" or row['Status #'] == "18" or row['Sub Status #'] == "20b" or row['Status #'] == "22" or row['Status #'] == "23" or row['Status #'] == "24"):
+            return row["L2 Pickup"]
+        elif row['Sub Status #'] in ["28a", "28b", "28c", "28d", "28e", "28f"]:
+            return row["L2 Telex"]
         else:
-            if status_no == "D":
-                return md_blocker
-            elif status_no == "B" or sub_status_no == "11a":
-                return l2_compliance
-            elif status_no == "03" or status_no == "04":
-                return l2_pi
-            elif status_no == "08":
-                return l2_prd
-            elif sub_status_no == "10a":
-                return l2_cprd
-            elif status_no == "12":
-                return l2_g2
-            elif sub_status_no == "14a" or sub_status_no == "14b":
-                return l2_g4
-            elif status_no == "17" or sub_status_no == "20a":
-                return l2_qc
-            elif sub_status_no == "19b" or sub_status_no == "19d":
-                return l2_spd
-            elif (status_no == "20" or status_no == "21" or status_no == "22") and production_status == "Cargo Picked(SM)":
-                return production_status
-            elif (sub_status_no == "14c" or
-                status_no == "18" or
-                sub_status_no == "20b" or
-                status_no == "22" or
-                status_no == "23" or
-                status_no == "24"):
-                return l2_pickup
-            elif (sub_status_no in ["28a", "28b", "28c", "28d", "28e", "28f"] or
-                status_no in ["29", "30", "31"]):
-                return l2_telex
-            else:
-                return "No L2 Status"
+            return "No L2 Status"
 
-    final_df["L2 Final Status"] = final_df.apply(
-        lambda row: func_l2_final_status(
-            row["Pickup Blocker"],
-            row["Status #"],
-            row["Sub Status #"],
-            row["MD Blocker"],
-            row["L2 Compliance"],
-            row["L2 PI"],
-            row["L2 PRD"],
-            row["L2 CPRD"],
-            row["L2 G2"],
-            row["L2 G4"],
-            row["L2 QC"],
-            row["L2 SPD"],
-            row["L2 Pickup"],
-            row["L2 Telex"],
-            row["production_status"]
-        ),
-        axis=1
-    )
+    final_df["L2 Final Status"] = final_df.apply(lambda row: func_l2_final_status(row), axis=1)
 
 
     final_df['Accountable'] = final_df['Sub Status'].map(status_mapping[["Sub Status", "Accountable"]].drop_duplicates(subset="Sub Status", keep="first").set_index('Sub Status')['Accountable']).fillna("NA")
     final_df['Responsible'] = final_df['Sub Status'].map(status_mapping[["Sub Status", "Responsible"]].drop_duplicates(subset="Sub Status", keep="first").set_index('Sub Status')['Responsible']).fillna("NA")
 
+    blockers_mapping["Blocker bucket"] = blockers_mapping["Blocker bucket"].str.strip()
+    blockers_mapping["POC"] = blockers_mapping["POC"].str.strip()
     excel_xlookup_map = blockers_mapping[["Blocker bucket", "POC"]].drop_duplicates(subset="Blocker bucket", keep="first").set_index("Blocker bucket")["POC"].fillna("NA").to_dict()
 
     def func_final_responsibility(row):
@@ -1364,7 +1340,7 @@ def main(dfs_tables, dfs_excels):
         # responsible = row["Responsible"]
 
         if row["L2 Final Status"] != "No L2 Status":
-            return excel_xlookup_map.get(row["L2 Final Status"], "Fahad Farooq")
+            return excel_xlookup_map.get(row["L2 Final Status"].strip(), "Fahad Farooq")
         else:
             if row["Status #"] == "25" and row["Batch Invoice Submission Status"] == "Submitted":
                 return "NA"
