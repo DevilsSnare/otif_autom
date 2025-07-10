@@ -436,7 +436,7 @@ def main(dfs_tables, dfs_excels):
         if row['Substatus']=="Delivered" or (pd.isna(row['INB#']) or row['INB#']==""):
             return "Released"
         else:
-            return inb_status_map.get(row['INB#'], None)
+            return inb_status_map.get(row['INB#'], "Not in INB Sheet")
         
     final_df['SM Telex Status'] = final_df.apply(func_supplier_telex_status, axis=1).fillna("Not in INB Sheet")
 
@@ -446,9 +446,19 @@ def main(dfs_tables, dfs_excels):
         if row['Substatus'] == "Delivered" or (pd.isna(row['INB#']) or row['INB#']==""):
             return "Released"
         else:
-            return inb_map.get(row['INB#'], None)
+            return inb_map.get(row['INB#'], "Not in INB Sheet")
 
     final_df['FFW Telex Status'] = final_df.apply(func_supplier_telex_status, axis=1).fillna("Not in INB Sheet")
+
+    telex_tableau_map = telex_tableau[["batch_id", "Batch Status"]].drop_duplicates(subset="batch_id", keep="first").set_index('batch_id')['Batch Status']
+
+    def func_batch_telex(row):
+        if row['Substatus'] == "Delivered" or (pd.isna(row['batch_id']) or row['batch_id'] == "") or row["FFW Telex Status"]=="Released":
+            return "Released"
+        else:
+            return telex_tableau_map.get(row['batch_id'], "Released")
+        
+    final_df['Batch Telex'] = final_df.apply(func_batch_telex, axis=1).fillna("Released")
 
     final_df['Vendor ID'] = pd.to_numeric(final_df['Vendor ID'], errors='coerce').astype('Int64')
     cm_sm_vendor_mapping['Vendor ID'] = pd.to_numeric(cm_sm_vendor_mapping['Vendor ID'], errors='coerce').astype('Int64')
@@ -1411,7 +1421,7 @@ def main(dfs_tables, dfs_excels):
         'Batch Payment Status','INB Payment Status','Line Payment Approval Status','Batch Payment Approval Status','INB Payment Approval Status','Transparency Check',
         'Transparency Pending','Batch Sign-Off','QC Stage','QC Pending','Batch QC Pending','Max QC Date','Booking Form Status','VP Booking Status','FOB Date','Incoterms2',
         'SPD','SPD Delay Reason','Actual pick-up date','Gate In Date','Actual Shipping Date','Batch Pickup Status','Shipping Status','INB#','Status','Substatus','Shipment Method',
-        'Actual Pickup','Actual Shipping Date3','Expected Arrival Date','Actual Arrival Date','Actual Delivery Date','Estimated OTIF Delivery Date','Supplier Telex Status',
+        'Actual Pickup','Actual Shipping Date3','Expected Arrival Date','Actual Arrival Date','Actual Delivery Date','Estimated OTIF Delivery Date', 'Batch Telex', 'Supplier Telex Status',
         'SM Telex Status','FFW Telex Status','CM','SM','Accountable','Responsible','Compliance Status','Batch Compliance','MD Blocker','A. Anti PO Line','B. Compliance Blocked',
         'C. Shipped','D. Master Data Blocker','01. PO Approval Pending','02. Supplier Confirmation Pending','03. PI Upload Pending','04. PI Approval Pending','05. PI Payment Pending',
         '06. Packaging Pending','07. Transparency Label Pending','08. PRD Pending','09. Under Production','10. PRD Confirmation Pending','11. IM Sign-Off Pending',

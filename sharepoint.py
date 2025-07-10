@@ -150,17 +150,54 @@ class SharepointClient:
         else:
             return print(f"Failed to upload file: {response.status_code}, {response.text}") 
 
-    def update_sharepoint_excel(self, site_url, library, df, file, sheet_name, start_cell="A1"):
+    # def update_sharepoint_excel(self, site_url, library, df, file, sheet_name, start_cell="A1"):
+    #     file_url = f"{site_url}/_api/web/GetFileByServerRelativeUrl('{library}/{file}')/$value"
+    #     response = self.session.get(file_url)
+    #     if response.status_code != 200:
+    #         print(f"Failed to download file: {response.status_code}")
+    #         return
+    
+    #     bytes_file_obj = io.BytesIO(response.content)
+    #     wb = openpyxl.load_workbook(bytes_file_obj)
+    #     ws = wb[sheet_name]
+    
+    #     start_col = openpyxl.utils.cell.column_index_from_string(re.findall(r"[A-Z]+", start_cell)[0])
+    #     start_row = int(re.findall(r"\d+", start_cell)[0])
+
+    #     max_row = ws.max_row
+    #     max_col = ws.max_column
+    #     for row in ws.iter_rows(min_row=start_row, max_row=max_row,
+    #                             min_col=start_col, max_col=max_col):
+    #         for cell in row:
+    #             cell.value = None
+    
+    #     for i, row in enumerate(df.values):
+    #         for j, val in enumerate(row):
+    #             ws.cell(row=start_row + i, column=start_col + j, value=str(val))
+    
+    #     output = io.BytesIO()
+    #     wb.save(output)
+    #     output.seek(0)
+    
+    #     upload_url = f"{site_url}/_api/web/GetFolderByServerRelativeUrl('{library}')/Files/add(url='{file}',overwrite=true)"
+    #     upload_response = self.session.post(upload_url, data=output.read())
+    
+    #     if upload_response.status_code == 200:
+    #         pass
+    #     else:
+    #         print(f"Failed to upload: {upload_response.status_code}, {upload_response.text}")
+
+    def update_sharepoint_excel(self, site_url, library, df, file, sheet_name, start_cell="A1", date_cols=None, number_cols=None):
         file_url = f"{site_url}/_api/web/GetFileByServerRelativeUrl('{library}/{file}')/$value"
         response = self.session.get(file_url)
         if response.status_code != 200:
             print(f"Failed to download file: {response.status_code}")
             return
-    
+
         bytes_file_obj = io.BytesIO(response.content)
         wb = openpyxl.load_workbook(bytes_file_obj)
         ws = wb[sheet_name]
-    
+
         start_col = openpyxl.utils.cell.column_index_from_string(re.findall(r"[A-Z]+", start_cell)[0])
         start_row = int(re.findall(r"\d+", start_cell)[0])
 
@@ -170,19 +207,33 @@ class SharepointClient:
                                 min_col=start_col, max_col=max_col):
             for cell in row:
                 cell.value = None
-    
-        for i, row in enumerate(df.values):
-            for j, val in enumerate(row):
-                ws.cell(row=start_row + i, column=start_col + j, value=str(val))
-    
+
+        header = df.columns.tolist()
+
+        for i, row_vals in enumerate(df.values):
+            for j, val in enumerate(row_vals):
+                # cell = ws.cell(row=start_row + i, column=start_col + j, value=val)
+                if isinstance(val, (datetime, pd.Timestamp)) and val.tzinfo is not None:
+                    val = val.replace(tzinfo=None)
+
+                cell = ws.cell(row=start_row + i, column=start_col + j, value=val)
+                col_name = header[j]
+                
+                if col_name == "Days Bucket":
+                    cell.number_format = '@'
+                elif date_cols and col_name in date_cols and isinstance(val, (datetime, pd.Timestamp)):
+                    cell.number_format = 'dd.mm.yyyy'
+                elif number_cols and col_name in number_cols and isinstance(val, (int, float)):
+                    cell.number_format = '0.00'
+
         output = io.BytesIO()
         wb.save(output)
         output.seek(0)
-    
+
         upload_url = f"{site_url}/_api/web/GetFolderByServerRelativeUrl('{library}')/Files/add(url='{file}',overwrite=true)"
         upload_response = self.session.post(upload_url, data=output.read())
-    
+
         if upload_response.status_code == 200:
-            pass
+            print(f"File '{file}' updated successfully.")
         else:
             print(f"Failed to upload: {upload_response.status_code}, {upload_response.text}")

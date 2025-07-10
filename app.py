@@ -5,8 +5,9 @@ from main import main as cal_main
 from dod import main as dod_main
 from sharepoint import SharepointClient
 from tqdm import tqdm
-from contextlib import redirect_stdout
-from io import StringIO
+import contextlib
+import io
+import logging
 
 def load_creds(path):
     creds = {}
@@ -56,7 +57,17 @@ for step in tqdm(steps, desc="Overall Progress", unit="step"):
         df['ci_terms'] = df_po['supplier_payment_terms'].str.extract(r'(\d+)% CI')[0].astype(float)
         df['ci_applicable'] = df['ci_terms'].apply(lambda x: 1 if x>0 else 0)
 
-        df['plt'] = 30
+        df['plt'] = df.apply(
+            lambda row: (
+                max(
+                    (pd.to_datetime(row['planned_prd']).date() - pd.to_datetime(row['po_created_date']).date()).days - 15
+                    if row['planned_prd'] != "" and pd.notna(row['planned_prd'])
+                    else 50,
+                    24
+                )
+            ),
+            axis=1
+        )
 
         df_po["po_razin_id"] = df_po["document_number"].astype(str) + df_po["item"].astype(str) + df_po["line_id"].astype(str)
         df['inco'] = df['po_razin_id'].map(df_po.drop_duplicates(subset="po_razin_id", keep="first").set_index('po_razin_id')['incoterms']).fillna("")
@@ -72,7 +83,11 @@ for step in tqdm(steps, desc="Overall Progress", unit="step"):
         # continue
 
     elif step == "Calculate DoD view":
-        final_df_with_dod = dod_main(final_df)
+        original_level = logging.getLogger().level
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            logging.getLogger().setLevel(logging.CRITICAL + 1)
+            final_df_with_dod = dod_main(final_df, dfs_excels['buffer_mapping'])
+            logging.getLogger().setLevel(original_level)
         # final_df_with_dod = final_df
 
     elif step == "Upload to SharePoint":
